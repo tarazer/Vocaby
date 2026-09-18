@@ -1,24 +1,38 @@
 from tkinter import *
+import sqlite3
 
-bg_color = "#ffff33"
+from taskbar import Taskbar
 
-window = Tk() # Creates a Window
-window.config(bg=bg_color)
-window.geometry("800x400")
+def show_page(page):
+    page.tkraise()
 
-photo = PhotoImage(file='assets/Helvetica.png')
+# Initialize Tkinter and create Window
+window = Tk()
+window.geometry('800x400')
 
-label = Label(window, 
-            text='Text i guess', 
-            font=('Arial', 50, 'italic'), 
-            bg=bg_color,
-            relief=SOLID,
-            bd=10,
-            padx=50,
-            image=photo,
-            compound="bottom")
+# Create the container for all Pages, those being Home Page, List Page
+container = Frame(window)
+container.pack(fill="both", expand=True)
 
-label.place(x=20,y=30)
+# Creating all accesible Pages to seperate content
+HomePage = Frame(container)
+ListPage = Frame(container)
+for page in (HomePage, ListPage):
+    page.place(x=0, y=0, relwidth=1, relheight=1)
 
 
-window.mainloop() # Displays Window and listens for events
+# 
+bar = Taskbar(HomePage).pack(fill='x')
+HomeContent = Frame(HomePage, bg="purple")
+HomeContent.pack(fill='both', expand=True)
+
+Label(HomeContent, text='Home Page', font=('Arial', 24)).place(relx=0.5, rely=0.5, anchor=CENTER)
+Label(ListPage, text='Page 2', font=('Arial', 24)).place(relx=0.5, rely=0.5, anchor=CENTER)
+
+
+
+# Show home page and start main loop
+show_page(HomePage)
+window.mainloop()
+
+
