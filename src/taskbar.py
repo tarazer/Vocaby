@@ -1,21 +1,27 @@
 from tkinter import *
+from logic import AddBook
 
 class Taskbar(Frame):
     """The Taskbar class, has the functions and widgets for the Main page taskbar"""
-    def __init__(self, parent):
+    def __init__(self, parent, homecontent):
         super().__init__(parent)
+        self.hc = homecontent
 
         self.bg_color = '#707070'
         self.height = 90
         self.config(bg=self.bg_color, height=self.height)
 
-        self._make_frames()
+        # Frames for UI Elemets left and right
+        self.left_frame = Frame(self)
+        self.right_frame = Frame(self)
+        
         self._make_labels()
         self._make_buttons()
-
-
+        self._make_frames()
+        
+        
     def _make_labels(self):
-        """Initiate all Labels"""
+        """Create and Initiate all Labels"""
         Label(self, 
             text='TASKBAR', 
             bg=self.bg_color,
@@ -24,20 +30,28 @@ class Taskbar(Frame):
 
 
     def _make_buttons(self):
-        """Initiate all Buttons"""
+        """Create and Initiate all Buttons"""
+        AddBook_Btn = Button(self.right_frame, text='Add Book', command=lambda: AddBook(self.hc, "Russian Toomfolery", "Russian"))
+        CoolBtn = Button(self.right_frame, text="1")
 
-        pass
+        for btn in [AddBook_Btn, CoolBtn]:
+            btn.config(width=10)
+            btn.pack(side='left', fill='y', padx=(5,0))
 
-
+      
     def _make_frames(self):
-        """Make Frames for task bar"""
+        """Style previously created Frames for task bar"""
+        # Creation and styling is seperated, since if i place 
+        # it while creating im unable to add widgets into it
         frame_height_multiplier = 0.75
         offset = (self.height - self.height * frame_height_multiplier) / 2
         
-        self.left_frame = Frame(self, bg="lightblue", width=100).place(
-                                                        x=offset,
-                                                        y=offset,
-                                                        relheight=frame_height_multiplier)
+        self.left_frame.config(bg="lightblue")
+        self.left_frame.place(
+                            x=offset,
+                            y=offset,
+                            relheight=frame_height_multiplier)
 
-        right_frame = Frame(self, bg="lightgreen", width=100, padx=offset).place(y=offset, relx=1, x=-offset, anchor='ne', relheight=frame_height_multiplier)
-        
+        self.right_frame.config(bg="lightgreen")
+        self.right_frame.place(y=offset, relx=1, x=-offset, anchor='ne', relheight=frame_height_multiplier)
+
