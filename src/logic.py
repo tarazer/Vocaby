@@ -23,7 +23,7 @@ c.execute("""
 conn.commit()
 
 
-def AddBook(parent, name_param, language_param):
+def AddBook(parent, ValueList):
     """UI Stuff when new book is added"""
     # Create Visual of book frame
     BookFrame = Frame(parent, bg="red", width=200, height=300)
@@ -41,5 +41,5 @@ def AddBook(parent, name_param, language_param):
 
 c.execute("SELECT * FROM books")
 #print(c.fetchone())
-print(c.fetchmany(5))
+#print(c.fetchmany(5))
 #c.fetchall()

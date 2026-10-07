@@ -1,11 +1,10 @@
 from tkinter import *
-from logic import AddBook
+import logic
 
 class Taskbar(Frame):
     """The Taskbar class, has the functions and widgets for the Main page taskbar"""
-    def __init__(self, parent, homecontent):
+    def __init__(self, parent):
         super().__init__(parent)
-        self.hc = homecontent
 
         self.bg_color = '#707070'
         self.height = 90
@@ -31,7 +30,7 @@ class Taskbar(Frame):
 
     def _make_buttons(self):
         """Create and Initiate all Buttons"""
-        AddBook_Btn = Button(self.right_frame, text='Add Book', command=lambda: AddBook(self.hc, "Russian Toomfolery", "Russian"))
+        AddBook_Btn = Button(self.right_frame, text='Add Book', command=lambda: logic.show_page(Bookform))
         CoolBtn = Button(self.right_frame, text="1")
 
         for btn in [AddBook_Btn, CoolBtn]:
