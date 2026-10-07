@@ -12,7 +12,6 @@ class BookForm(Frame):
         self.config(height=500, bg="green")
         self.pack_propagate(False)
 
-
         self.TitleFrame = Frame(self, bg="yellow")
         self.ContentFrame = Frame(self, bg="orange")
 
@@ -44,6 +43,17 @@ class BookForm(Frame):
             width=8,
             command=lambda:logic.AddBook(self.pm.pages['homeC'], self.get_values()),
             ).place(anchor='se', rely=1, relx=1, x=-10, y=-10)
+
+        dropdown_options = ['None', 'Spanish', 'Russian']
+        var = StringVar()
+        var.set("None") # default
+        dropdown = OptionMenu(self.ContentFrame, 
+            var, 
+            *dropdown_options,
+            )
+        dropdown.place(relx=1, rely=0.1, anchor='e', x=-10)
+        dropdown.config(font=("Helvetica", 14))
+        dropdown["menu"].config(font=("Helvetica", 14)) 
             
 
     def _make_text(self):
@@ -72,17 +82,3 @@ class BookForm(Frame):
             return None
         print(len(title))
         return [title, description]
-
-
-
-""" Use someday
-options = {
-    "Easy": 1,
-    "Medium": 2,
-    "Hard": 3,
-}
-var = StringVar()
-var.set("Medium")  # default
-dropdown = OptionMenu(HomePage, var, *options.keys())
-dropdown.place(relx=0.5, rely=0.5, anchor=CENTER)
-"""
