@@ -5,8 +5,9 @@ class BookForm(Frame):
     """Form for creating new books. Pops up when 
     The add book button is clicked"""
 
-    def __init__(self, parent):
+    def __init__(self, parent, pagemanager):
         super().__init__(parent)
+        self.pm = pagemanager
 
         self.config(height=500, bg="green")
         self.pack_propagate(False)
@@ -34,14 +35,14 @@ class BookForm(Frame):
             text='Cancel',
             height=2,
             width=8,
-            command=lambda:print('Herro'),
+            command=lambda:self.pm.hide_page('bookform'),
             ).place(anchor='sw', rely=1, x=10, y=-10)
 
         CreateBtn = Button(self.ContentFrame,
             text='Create',
             height=2,
             width=8,
-            command=lambda:logic.AddBook(self.get_values),
+            command=lambda:logic.AddBook(self.pm.pages['homeC'], self.get_values()),
             ).place(anchor='se', rely=1, relx=1, x=-10, y=-10)
             
 
@@ -65,4 +66,23 @@ class BookForm(Frame):
 
     def get_values(self):
         title = self.Title.get()
-        description = self.Description.get()
+        description = self.Description.get('1.0', 'end-1c')
+
+        if title == '':
+            return None
+        print(len(title))
+        return [title, description]
+
+
+
+""" Use someday
+options = {
+    "Easy": 1,
+    "Medium": 2,
+    "Hard": 3,
+}
+var = StringVar()
+var.set("Medium")  # default
+dropdown = OptionMenu(HomePage, var, *options.keys())
+dropdown.place(relx=0.5, rely=0.5, anchor=CENTER)
+"""

@@ -1,10 +1,26 @@
 import sqlite3
 from tkinter import *
 
-def show_page(page):
-    page.tkraise()
+
+class PageManager:
+    """Manage windows and forms"""
+    def __init__(self):
+        self.pages = {}
+        
+
+    def addPage(self, key, value):
+        self.pages[key] = value
 
 
+    def show_pages(self):
+        print(self.pages)
+
+
+    def show_page(self, page):
+        self.pages[page].tkraise()    
+
+    def hide_page(self, page):
+        self.pages[page].lower()
 
 
 
@@ -25,15 +41,19 @@ conn.commit()
 
 def AddBook(parent, ValueList):
     """UI Stuff when new book is added"""
+    if ValueList == None:
+        print('Title is empty')
+        return None
+
     # Create Visual of book frame
     BookFrame = Frame(parent, bg="red", width=200, height=300)
     BookFrame.pack(side="left", anchor="n", padx=(20,0), pady=(20,0))
 
     # Book Frame db entry
-    c.execute("""
-        INSERT INTO books (name, language) VALUES (?, ?)
-        """, (name_param, language_param))
-    conn.commit()
+    #c.execute("""
+    #    INSERT INTO books (name, language) VALUES (?, ?)
+    #    """, (ValueList))
+    #conn.commit()
 
     # Confirm code run
     print("Book added!")

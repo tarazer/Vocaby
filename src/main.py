@@ -8,12 +8,14 @@ import logic
 window = Tk()
 window.geometry('800x400')
 
+pagemanager = logic.PageManager()
+
 
 # Create the container for all Pages, those being Home Page, List Page
 container = Frame(window).pack(fill="both", expand=True)
 
 
-# Creating all accesible Pages to seperate content
+# Creating all accesible Pages and Forms
 HomePage = Frame(container)
 HomeContent = Frame(HomePage, bg="purple")
 ListPage = Frame(container)
@@ -21,14 +23,19 @@ ListPage = Frame(container)
 for page in (HomePage, ListPage):
     page.place(x=0, y=0, relwidth=1, relheight=1)
 
-
-# Forms
-Bookform = BookForm(window)
+Bookform = BookForm(window, pagemanager)
 Bookform.place(relx=0.5, rely=0.5, anchor=CENTER, relwidth=0.5)
 
 
+# Populate Page/Form Manager
+pagemanager.addPage('home', HomePage)
+pagemanager.addPage('homeC', HomeContent)
+pagemanager.addPage('bookform', Bookform)
+pagemanager.addPage('list', ListPage)
+
+
 # HomePage Widgets
-bar = Taskbar(HomePage).pack(fill='x')
+bar = Taskbar(HomePage, pagemanager).pack(fill='x')
 Label(HomeContent, text='Home Page', font=('Arial', 24)).place(relx=0.5, rely=0.5, anchor=CENTER)
 HomeContent.pack(fill='both', expand=True)
 # ListPage Widgets
@@ -40,8 +47,7 @@ Label(ListPage, text='Page 2', font=('Arial', 24)).place(relx=0.5, rely=0.5, anc
 
 
 # Show home page and start main loop
-logic.show_page(HomePage)
-logic.show_page(Bookform)
+pagemanager.show_page('home')
 window.mainloop()
 
 logic.conn.close()
