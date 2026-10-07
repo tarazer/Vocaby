@@ -44,16 +44,17 @@ class BookForm(Frame):
             command=lambda:logic.AddBook(self.pm.pages['homeC'], self.get_values()),
             ).place(anchor='se', rely=1, relx=1, x=-10, y=-10)
 
-        dropdown_options = ['None', 'Spanish', 'Russian']
-        var = StringVar()
-        var.set("None") # default
-        dropdown = OptionMenu(self.ContentFrame, 
-            var, 
-            *dropdown_options,
+        # DEFINETLY CLEAN UP
+        dropdown_options = {'None': 'no', 'Spanish':'sp', 'Russian': 'rus'}
+        self.language_var = StringVar()
+        self.language_var.set("None") # default
+        self.Language = OptionMenu(self.ContentFrame, 
+            self.language_var, 
+            *dropdown_options.keys(),
             )
-        dropdown.place(relx=1, rely=0.1, anchor='e', x=-10)
-        dropdown.config(font=("Helvetica", 14))
-        dropdown["menu"].config(font=("Helvetica", 14)) 
+        self.Language.place(relx=1, rely=0.1, anchor='e', x=-10)
+        self.Language.config(font=("Helvetica", 14))
+        self.Language["menu"].config(font=("Helvetica", 14)) 
             
 
     def _make_text(self):
@@ -76,9 +77,10 @@ class BookForm(Frame):
 
     def get_values(self):
         title = self.Title.get()
+        language = self.language_var.get()
         description = self.Description.get('1.0', 'end-1c')
 
         if title == '':
             return None
-        print(len(title))
-        return [title, description]
+
+        return [title, language, description]
