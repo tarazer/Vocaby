@@ -5,9 +5,10 @@ class BookForm(Frame):
     """Form for creating new books. Pops up when 
     The add book button is clicked"""
 
-    def __init__(self, parent, pagemanager):
+    def __init__(self, parent, pagemanager, bookbox):
         super().__init__(parent)
         self.pm = pagemanager
+        self.bb = bookbox
 
         self.config(height=500, bg="green")
         self.pack_propagate(False)
@@ -41,7 +42,7 @@ class BookForm(Frame):
             text='Create',
             height=2,
             width=8,
-            command=lambda:logic.AddBook(self.pm.pages['homeC'], self.get_values()),
+            command=lambda:self.bb.addBook(self.get_values()),
             ).place(anchor='se', rely=1, relx=1, x=-10, y=-10)
 
         # DEFINETLY CLEAN UP

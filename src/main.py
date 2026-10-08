@@ -4,11 +4,11 @@ from taskbar import Taskbar
 from bookform import BookForm
 import logic
 
-# Initialize Tkinter and create Window
+# Initialize Tkinter, create Window and init managers
 window = Tk()
 window.geometry('800x400')
 pagemanager = logic.PageManager()
-
+db = logic.Database()
 
 # Create the container for all Pages, those being Home Page, List Page
 container = Frame(window).pack(fill="both", expand=True)
@@ -22,8 +22,21 @@ ListPage = Frame(container)
 for page in (HomePage, ListPage):
     page.place(x=0, y=0, relwidth=1, relheight=1)
 
-Bookform = BookForm(window, pagemanager)
+books = logic.BookBox(HomeContent, pagemanager, db)
+books.place(relwidth=1, 
+    relheight=1,
+    width=-40,
+    y=20,
+    anchor='center',
+    rely=0.5,
+    relx=0.5,
+    )
+#books.bind("<Configure>", books.loadBooks)
+
+
+Bookform = BookForm(window, pagemanager, books)
 Bookform.place(relx=0.5, rely=0.5, anchor=CENTER, relwidth=0.5)
+
 
 
 # Populate Page/Form Manager
@@ -52,12 +65,12 @@ Label(ListPage,
 
 
 # Load saved books from DB
-logic.LoadBooks(HomeContent)
+books.loadBooks()
 
 
 # Show home page and start main loop
 pagemanager.show_page('home')
 window.mainloop()
 
-logic.conn.close()
+db.conn.close()
 

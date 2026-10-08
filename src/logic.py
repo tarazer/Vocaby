@@ -12,7 +12,7 @@ class PageManager:
         self.pages[key] = value
 
 
-    def show_pages(self):
+    def show_pages(self): # for debugging
         print(self.pages)
 
 
@@ -23,77 +23,108 @@ class PageManager:
         self.pages[page].lower()
 
 
-
-# DB Stuff
-conn = sqlite3.connect("books.db")
-c = conn.cursor()
-
-#Create Table
-c.execute("""
-    CREATE TABLE IF NOT EXISTS books (
-        id INTEGER PRIMARY KEY,
-        name text,
-        language text,
-        description text
-    )""")
-
-conn.commit()
+    def openList(self, id):
+        print(id)
 
 
-def LoadBooks(parent):
-    c.execute("SELECT * FROM books")
-    books = c.fetchall()
-    for b in books:
-        CreateBookFrame(parent, b[1:4])
 
+class Database():
+    """sqlite database"""
+    def __init__(self):
+        self.conn = sqlite3.connect("books.db")
+        self.c = self.conn.cursor()
 
-def CreateBookFrame(parent, Values):
-    title = Values[0]
-    language = Values[1]
-    description = Values[2]
-
-    colorcode = {
-        'None': 'red',
-        'Spanish': 'orange',
-        'Russian': 'blue'
-    }
+        #Create Table
+        self.c.execute("""
+            CREATE TABLE IF NOT EXISTS books (
+                id INTEGER PRIMARY KEY,
+                name text,
+                language text,
+                description text
+            )""")
+        
+        self.conn.commit()
     
-    BookFrame = Frame(parent, bg='white', width=200, height=300)
-    BookFrame.pack_propagate(False)
-
-    Title = Label(BookFrame, text=title)
-    Title.pack(anchor='n', pady=5)
-    LangFrame = Frame(BookFrame, bg=colorcode[language], width=180, height=90, cursor='hand2')
-    LangFrame.pack()
-    Label(BookFrame, text=description, wraplength=180).pack(pady=5)
-    
-    BookFrame.pack(side="left", anchor="n", padx=(20,0), pady=(20,0))
-
-
-def AddBook(parent, ValueList):
-    """UI Stuff when new book is added"""
-    if ValueList == None: # Guard against empty input
-        print('Title is empty')
-        return None
-
-    # Create Visual of book frame
-    CreateBookFrame(parent, ValueList)
-
-    # Book Frame db entry
-    c.execute("""
-        INSERT INTO books (name, language, description) VALUES (?, ?, ?)
-        """, (ValueList))
-    conn.commit()
-
-    # Confirm code run
-    print("Book added!")
 
 
 
+class BookBox(Frame):
+    """Box that holds and manages all Books 
+    in Homecontent on Homepage"""
+
+    def __init__(self, parent, pagemanager, database):
+        super().__init__(parent)
+        self.pm = pagemanager
+        self.db = database
+
+        self.books = {}
+
+        self.config(
+            bg='lime',
+            )
+
+
+    def addBook(self, valueList):
+        """UI Stuff when new book is added"""
+        if valueList == None: # Guard against empty input
+            print('Title is empty')
+            return None
+
+        # Create Visual of book frame
+        self.placeBook(valueList)
+
+        # Book Frame db entry
+        self.db.c.execute("""
+            INSERT INTO books (name, language, description) VALUES (?, ?, ?)
+            """, (valueList))
+        self.db.conn.commit()
+        
+
+    def placeBook(self, values):
+        id = values[0]
+        title = values[1]
+        language = values[2]
+        description = values[3]
+
+        colorcode = {
+            'None': 'red',
+            'Spanish': 'orange',
+            'Russian': 'blue'
+        }
+
+        BookFrame = Frame(self, bg='white', width=200, height=300)
+        BookFrame.pack_propagate(False)
+
+        Title = Label(BookFrame, text=title)
+        Title.pack(anchor='n', pady=5)
+        LangFrame = Frame(BookFrame, bg=colorcode[language], width=180, height=90, cursor='hand2')
+        LangFrame.pack()
+        Label(BookFrame, text=description, wraplength=180).pack(pady=5)
+        
+        BookFrame.pack(side=LEFT, anchor='n', padx=(0, 20))   
+
+        self.books[BookFrame] = id
+
+        BookFrame.bind('<Button-1>', self.openBook)
+
+
+    def openBook(self, event):
+        id = self.books[event.widget]
+        self.pm.openList(id)
+
+
+    def loadBooks(self):
+        self.db.c.execute("SELECT * FROM books")
+        books = self.db.c.fetchall()
+
+        for b in books:
+            self.placeBook(b)
+
+        print(self.books)
 
 
 
-
+            
 #print(c.fetchone())
 #print(c.fetchmany(5))
 #c.fetchall()
