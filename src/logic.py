@@ -29,7 +29,6 @@ conn = sqlite3.connect("books.db")
 c = conn.cursor()
 
 #Create Table
-#c.execute("""DROP TABLE books""")
 c.execute("""
     CREATE TABLE IF NOT EXISTS books (
         id INTEGER PRIMARY KEY,
@@ -41,6 +40,36 @@ c.execute("""
 conn.commit()
 
 
+def LoadBooks(parent):
+    c.execute("SELECT * FROM books")
+    books = c.fetchall()
+    for b in books:
+        CreateBookFrame(parent, b[1:4])
+
+
+def CreateBookFrame(parent, Values):
+    title = Values[0]
+    language = Values[1]
+    description = Values[2]
+
+    colorcode = {
+        'None': 'red',
+        'Spanish': 'orange',
+        'Russian': 'blue'
+    }
+    
+    BookFrame = Frame(parent, bg='white', width=200, height=300)
+    BookFrame.pack_propagate(False)
+
+    Title = Label(BookFrame, text=title)
+    Title.pack(anchor='n', pady=5)
+    LangFrame = Frame(BookFrame, bg=colorcode[language], width=180, height=90, cursor='hand2')
+    LangFrame.pack()
+    Label(BookFrame, text=description, wraplength=180).pack(pady=5)
+    
+    BookFrame.pack(side="left", anchor="n", padx=(20,0), pady=(20,0))
+
+
 def AddBook(parent, ValueList):
     """UI Stuff when new book is added"""
     if ValueList == None: # Guard against empty input
@@ -48,8 +77,7 @@ def AddBook(parent, ValueList):
         return None
 
     # Create Visual of book frame
-    BookFrame = Frame(parent, bg="red", width=200, height=300)
-    BookFrame.pack(side="left", anchor="n", padx=(20,0), pady=(20,0))
+    CreateBookFrame(parent, ValueList)
 
     # Book Frame db entry
     c.execute("""
@@ -65,7 +93,7 @@ def AddBook(parent, ValueList):
 
 
 
-c.execute("SELECT * FROM books")
+
 #print(c.fetchone())
-print(c.fetchmany(5))
+#print(c.fetchmany(5))
 #c.fetchall()

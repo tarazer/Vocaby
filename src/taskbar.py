@@ -35,9 +35,8 @@ class Taskbar(Frame):
             text='Add Book', 
             command=lambda: self.pm.show_page('bookform')
             )
-        CoolBtn = Button(self.right_frame, text="1")
 
-        for btn in [AddBook_Btn, CoolBtn]:
+        for btn in [AddBook_Btn]:
             btn.config(width=10)
             btn.pack(side='left', fill='y', padx=(5,0))
 

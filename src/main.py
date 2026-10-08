@@ -7,7 +7,6 @@ import logic
 # Initialize Tkinter and create Window
 window = Tk()
 window.geometry('800x400')
-
 pagemanager = logic.PageManager()
 
 
@@ -36,14 +35,24 @@ pagemanager.addPage('list', ListPage)
 
 # HomePage Widgets
 bar = Taskbar(HomePage, pagemanager).pack(fill='x')
-Label(HomeContent, text='Home Page', font=('Arial', 24)).place(relx=0.5, rely=0.5, anchor=CENTER)
+Label(HomeContent, 
+    text='Home Page', 
+    font=('Arial', 24)
+    ).place(relx=0.5, rely=0.5, anchor=CENTER)
 HomeContent.pack(fill='both', expand=True)
 # ListPage Widgets
-Label(ListPage, text='Page 2', font=('Arial', 24)).place(relx=0.5, rely=0.5, anchor=CENTER)
+Label(ListPage, 
+    text='Page 2', 
+    font=('Arial', 24)
+    ).place(relx=0.5, rely=0.5, anchor=CENTER)
 
 
 # Make window update after resize
 #window.bind("<Configure>", ???)
+
+
+# Load saved books from DB
+logic.LoadBooks(HomeContent)
 
 
 # Show home page and start main loop
