@@ -34,3 +34,7 @@ class BookPage(Frame):
         self.current_book = self.db.c.fetchall()
         
         print(self.current_book)
+
+
+    def _load_words(self):
+        pass
