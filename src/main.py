@@ -10,6 +10,7 @@ window.geometry('800x400')
 pagemanager = logic.PageManager()
 db = logic.Database()
 
+
 # Create the container for all Pages, those being Home Page, List Page
 container = Frame(window).pack(fill="both", expand=True)
 
@@ -31,12 +32,9 @@ books.place(relwidth=1,
     rely=0.5,
     relx=0.5,
     )
-#books.bind("<Configure>", books.loadBooks)
-
 
 Bookform = BookForm(window, pagemanager, books)
 Bookform.place(relx=0.5, rely=0.5, anchor=CENTER, relwidth=0.5)
-
 
 
 # Populate Page/Form Manager
@@ -48,16 +46,7 @@ pagemanager.addPage('list', ListPage)
 
 # HomePage Widgets
 bar = Taskbar(HomePage, pagemanager).pack(fill='x')
-Label(HomeContent, 
-    text='Home Page', 
-    font=('Arial', 24)
-    ).place(relx=0.5, rely=0.5, anchor=CENTER)
 HomeContent.pack(fill='both', expand=True)
-# ListPage Widgets
-Label(ListPage, 
-    text='Page 2', 
-    font=('Arial', 24)
-    ).place(relx=0.5, rely=0.5, anchor=CENTER)
 
 
 # Make window update after resize
@@ -73,4 +62,3 @@ pagemanager.show_page('home')
 window.mainloop()
 
 db.conn.close()
-

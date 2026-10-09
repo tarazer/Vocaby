@@ -16,15 +16,25 @@ class PageManager:
         print(self.pages)
 
 
-    def show_page(self, page):
-        self.pages[page].tkraise()    
+    def show_page(self, page, id=None):
+        if id == None:
+            self.pages[page].tkraise()    
+        else:
+            self.pages[page].tkraise()
+            Label(self.pages['list'], 
+                text=id,
+                font=('Helvetica', 18)
+                ).place(relx=0.5, rely=0.5, anchor=CENTER)
+            # Func that loads words for ListPage
+            
+        
 
     def hide_page(self, page):
         self.pages[page].lower()
 
 
     def openList(self, id):
-        print(id)
+        pass
 
 
 
@@ -92,12 +102,12 @@ class BookBox(Frame):
             'Russian': 'blue'
         }
 
-        BookFrame = Frame(self, bg='white', width=200, height=300)
+        BookFrame = Frame(self, bg='white', width=200, height=300, cursor='hand2')
         BookFrame.pack_propagate(False)
 
         Title = Label(BookFrame, text=title)
         Title.pack(anchor='n', pady=5)
-        LangFrame = Frame(BookFrame, bg=colorcode[language], width=180, height=90, cursor='hand2')
+        LangFrame = Frame(BookFrame, bg=colorcode[language], width=180, height=90)
         LangFrame.pack()
         Label(BookFrame, text=description, wraplength=180).pack(pady=5)
         
@@ -106,11 +116,16 @@ class BookBox(Frame):
         self.books[BookFrame] = id
 
         BookFrame.bind('<Button-1>', self.openBook)
+        for c in BookFrame.winfo_children():
+            c.bind('<Button-1>', self.openBook)
 
 
     def openBook(self, event):
-        id = self.books[event.widget]
-        self.pm.openList(id)
+        try:
+            id = self.books[event.widget]
+        except:
+            id = self.books[event.widget.master]
+        self.pm.show_page('list', id)
 
 
     def loadBooks(self):
