@@ -138,6 +138,17 @@ class BookBox(Frame):
         print(self.books)
 
 
+    def place_self(self):
+        self.place(relwidth=1, 
+            relheight=1,
+            width=-40,
+            y=20,
+            anchor='center',
+            rely=0.5,
+            relx=0.5,
+            )
+
+
 
 
 

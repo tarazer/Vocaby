@@ -38,4 +38,4 @@ class Taskbar(Frame):
         self.left_frame.pack(side=LEFT)
 
         self.right_frame.config(bg="lightgreen")
-        self.right_frame.pack(side=RIGHT)
+        self.right_frame.pack(side=RIGHT)        

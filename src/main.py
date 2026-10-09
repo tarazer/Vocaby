@@ -2,7 +2,7 @@ from tkinter import *
 
 from taskbar import Taskbar
 from bookform import BookForm
-from bookpage import BookPage
+from wordpage import WordPage
 import logic
 
 # Initialize Tkinter, create Window and init managers
@@ -12,56 +12,39 @@ pagemanager = logic.PageManager()
 db = logic.Database()
 
 
-# Create the container for all Pages, those being Home Page, List Page
-container = Frame(window).pack(fill="both", expand=True)
-
-
-# Creating all accesible Pages and Forms
-HomePage = Frame(container)
+# Creating Main Pages
+HomePage = Frame(window)
 pagemanager.addPage('home', HomePage)
 
-HomeContent = Frame(HomePage, bg="purple")
-pagemanager.addPage('homeC', HomeContent)
-
-ListPage = Frame(container)
+ListPage = Frame(window)
 pagemanager.addPage('list', ListPage)
-
-bookp = BookPage(ListPage, pagemanager, db)
-bookp.place(relx=0.5, rely=0.5, anchor=CENTER, relwidth=0.5, relheight=1)
 
 for page in (HomePage, ListPage):
     page.place(x=0, y=0, relwidth=1, relheight=1)
 
-books = logic.BookBox(HomeContent, pagemanager, db, bookp)
-books.place(relwidth=1, 
-    relheight=1,
-    width=-40,
-    y=20,
-    anchor='center',
-    rely=0.5,
-    relx=0.5,
-    )
-
-Bookform = BookForm(window, pagemanager, books)
-Bookform.place(relx=0.5, rely=0.5, anchor=CENTER, relwidth=0.5)
-pagemanager.addPage('bookform', Bookform)
-
 
 # HomePage & ListPage Widgets
 bar = Taskbar(HomePage, pagemanager).pack(fill='x')
+HomeContent = Frame(HomePage, bg="purple")
 HomeContent.pack(fill='both', expand=True)
 
+wordpage = WordPage(ListPage, pagemanager, db)
+wordpage.place_self()
 
-# Make window update after resize
-#window.bind("<Configure>", ???)
-
-
-# Load saved books from DB
-books.loadBooks()
+book_display = logic.BookBox(HomeContent, pagemanager, db, wordpage)
+book_display.place_self()
 
 
-# Show home page and start main loop
+# Create Forms
+book_creation_form = BookForm(window, pagemanager, book_display)
+book_creation_form.place(relx=0.5, rely=0.5, anchor=CENTER, relwidth=0.5)
+pagemanager.addPage('bookform', book_creation_form)
+
+
+# Prepare for app start and start main loop
+book_display.loadBooks()
 pagemanager.show_page('home')
+
 window.mainloop()
 
 db.conn.close()
