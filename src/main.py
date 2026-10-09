@@ -2,6 +2,7 @@ from tkinter import *
 
 from taskbar import Taskbar
 from bookform import BookForm
+from bookpage import BookPage
 import logic
 
 # Initialize Tkinter, create Window and init managers
@@ -17,13 +18,21 @@ container = Frame(window).pack(fill="both", expand=True)
 
 # Creating all accesible Pages and Forms
 HomePage = Frame(container)
+pagemanager.addPage('home', HomePage)
+
 HomeContent = Frame(HomePage, bg="purple")
+pagemanager.addPage('homeC', HomeContent)
+
 ListPage = Frame(container)
+pagemanager.addPage('list', ListPage)
+
+bookp = BookPage(ListPage, pagemanager, db)
+bookp.place(relx=0.5, rely=0.5, anchor=CENTER, relwidth=0.5, relheight=1)
 
 for page in (HomePage, ListPage):
     page.place(x=0, y=0, relwidth=1, relheight=1)
 
-books = logic.BookBox(HomeContent, pagemanager, db)
+books = logic.BookBox(HomeContent, pagemanager, db, bookp)
 books.place(relwidth=1, 
     relheight=1,
     width=-40,
@@ -35,16 +44,10 @@ books.place(relwidth=1,
 
 Bookform = BookForm(window, pagemanager, books)
 Bookform.place(relx=0.5, rely=0.5, anchor=CENTER, relwidth=0.5)
-
-
-# Populate Page/Form Manager
-pagemanager.addPage('home', HomePage)
-pagemanager.addPage('homeC', HomeContent)
 pagemanager.addPage('bookform', Bookform)
-pagemanager.addPage('list', ListPage)
 
 
-# HomePage Widgets
+# HomePage & ListPage Widgets
 bar = Taskbar(HomePage, pagemanager).pack(fill='x')
 HomeContent.pack(fill='both', expand=True)
 

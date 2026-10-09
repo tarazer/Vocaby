@@ -6,6 +6,7 @@ class PageManager:
     """Manage windows and forms"""
     def __init__(self):
         self.pages = {}
+        self.book_id = None
         
 
     def addPage(self, key, value):
@@ -18,16 +19,12 @@ class PageManager:
 
     def show_page(self, page, id=None):
         if id == None:
-            self.pages[page].tkraise()    
+            pass
         else:
-            self.pages[page].tkraise()
-            Label(self.pages['list'], 
-                text=id,
-                font=('Helvetica', 18)
-                ).place(relx=0.5, rely=0.5, anchor=CENTER)
-            # Func that loads words for ListPage
+            self.book_id = id
+
+        self.pages[page].tkraise()
             
-        
 
     def hide_page(self, page):
         self.pages[page].lower()
@@ -62,10 +59,11 @@ class BookBox(Frame):
     """Box that holds and manages all Books 
     in Homecontent on Homepage"""
 
-    def __init__(self, parent, pagemanager, database):
+    def __init__(self, parent, pagemanager, database, bookp):
         super().__init__(parent)
         self.pm = pagemanager
         self.db = database
+        self.bp = bookp
 
         self.books = {}
 
@@ -126,6 +124,8 @@ class BookBox(Frame):
         except:
             id = self.books[event.widget.master]
         self.pm.show_page('list', id)
+        self.bp.load()
+        
 
 
     def loadBooks(self):
@@ -139,7 +139,13 @@ class BookBox(Frame):
 
 
 
-            
+
+
+
+
+
+
+    
 #print(c.fetchone())
 #print(c.fetchmany(5))
 #c.fetchall()
