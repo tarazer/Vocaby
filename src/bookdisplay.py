@@ -45,6 +45,7 @@ class BookDisplay(Frame):
 
         book_frame.destroy()        
 
+
     def place_book(self, values):
         id =            values[0]
         title =         values[1]

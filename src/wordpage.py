@@ -18,24 +18,38 @@ class WordPage(Frame):
         self.current_id = None
         self.current_words = []
 
-        self._back_button()
+        self._make_back_button()
+        self._make_book_label()
 
 
-    def _back_button(self):
+    def _make_back_button(self):
         BackBtn = Button(self.parent, 
                     text='back',
                     width=8,
                     height=2,
+                    font=('Helvetica', 12),
                     command=lambda:self.pm.hide_page('list'))
 
         BackBtn.place(x=10, y=10)
+
+
+    def _make_book_label(self):
+        self.book_label = Label(self.parent, 
+            text='',
+            bg='green',
+            font=('Helvetica', 14),
+            height=2,)
+
+        self.book_label.place(relx=0.5, y=12, anchor='n')
 
         
     def load(self, id):
         self.current_id = id
         print('Loading Book ID:', id)
         self.db.c.execute("""SELECT * FROM books WHERE rowid=(?)""", (id,))
-        self.current_book = self.db.c.fetchall()
+        self.current_book = self.db.c.fetchone()[0]
+        
+        self.book_label.config(text=self.current_book)
         
         print(self.current_book)
 
@@ -57,4 +71,4 @@ class WordPage(Frame):
             anchor='s', 
             relwidth=0.6, 
             relheight=1,
-            height=-70)
+            height=-80)
