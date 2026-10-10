@@ -38,10 +38,10 @@ class BookForm(Frame):
 
     def _make_name_entry(self):
         self.name = Entry(self.ContentFrame, 
-            width=10, 
+            width=20, 
             font=('Helvetica', 18)
             )
-        self.name.place(relx=0.5, rely=0.1, anchor=CENTER, relwidth=0.5)
+        self.name.place(x=10, rely=0.1, anchor='nw')
 
 
     def _make_description_entry(self):
@@ -61,12 +61,10 @@ class BookForm(Frame):
         self.language_var.set("None") # default
         dropdown = OptionMenu(self.ContentFrame, 
             self.language_var, 
-            *dropdown_options.keys(),
-            )
-        dropdown.place(relx=1, rely=0.1, anchor='e', x=-10)
-        dropdown.place(relx=1, rely=0.1, anchor='e', x=-10)
+            *dropdown_options.keys(),)
+            
+        dropdown.place(relx=1, rely=0.1, anchor='ne', x=-10)
 
-        # 
         dropdown.config(font=("Helvetica", 14))
         dropdown["menu"].config(font=("Helvetica", 14)) 
 

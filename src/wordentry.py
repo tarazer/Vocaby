@@ -3,7 +3,7 @@ from tkinter import *
 class WordEntry(Frame):
     """Singe entry with word translation and description"""
 
-    def __init__(self, parent, database, word, translation, description):
+    def __init__(self, parent, word, translation, description):
         super().__init__(parent)
         self.db = database
 

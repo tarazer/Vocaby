@@ -19,7 +19,6 @@ class WordPage(Frame):
         self.current_words = []
 
         self._back_button()
-        self._add_word_button()
 
 
     def _back_button(self):
@@ -30,16 +29,6 @@ class WordPage(Frame):
                     command=lambda:self.pm.hide_page('list'))
 
         BackBtn.place(x=10, y=10)
-
-
-    def _add_word_button(self):
-        AddWordBtn = Button(self.parent,
-                    text='Add Word',
-                    width=8,
-                    height=2,
-                    command=lambda:self.pm.show_page('wordform'))
-
-        AddWordBtn.place(relx=1, x=-10, y=10, anchor='ne')
 
         
     def load(self, id):
@@ -56,11 +45,9 @@ class WordPage(Frame):
 
 
     def add_word(self):
-        we = WordEntry(self, self.db, )
+        we = WordEntry(self, )
         we.place_self()
         self.current_words.append(we)
-
-        
 
 
     def place_self(self):

@@ -49,7 +49,7 @@ pagemanager.addPage('wordform', word_creation_form)
 
 # Prepare for app start and start main loop
 book_display.load_books()
-pagemanager.hide_page('wordform') # hide word form
+#pagemanager.hide_page('wordform') # hide word form
 pagemanager.show_page('home')
 
 window.mainloop()

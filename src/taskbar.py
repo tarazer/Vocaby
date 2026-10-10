@@ -12,15 +12,20 @@ class Taskbar(Frame):
         self.left_frame = Frame(self)
         self.right_frame = Frame(self)
         
-        self._make_labels()
+        self._make_vocaby_label()
         self._addbook_btn()
         self._make_frames()
         
         
-    def _make_labels(self):
-        """Create and Initiate all Labels"""
-        pass
+    def _make_vocaby_label(self):
+        vocaby_label = Label(self.left_frame,
+        text='Vocaby',
+        width=10, height=2,
+        bg='tomato',
+        font=('Helvetica', 18))
 
+        vocaby_label.pack(side='left', fill='y', padx=(20,5))
+        
 
     def _addbook_btn(self):
         AddBook_Btn = Button(self.right_frame, 

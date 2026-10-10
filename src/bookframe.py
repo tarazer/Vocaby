@@ -55,8 +55,8 @@ class BookFrame(Frame):
             anchor='se',
             relx=1,
             rely=1,
-            x=-5,
-            y=-5
+            x=-9,
+            y=-9
         )
 
 
