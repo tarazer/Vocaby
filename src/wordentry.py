@@ -5,7 +5,6 @@ class WordEntry(Frame):
 
     def __init__(self, parent, word, translation, description):
         super().__init__(parent)
-        self.db = database
 
         self.config(bg='purple')
 
@@ -13,10 +12,9 @@ class WordEntry(Frame):
 
 
     def _make_entry(self, word, translation, description):
-        Label(self, text=word).pack()
-        Label(self, text=translation).pack()
-        Label(self, text=description).pack()
+        for i in [word, translation, description]:
+            Label(self, text=i, font=('Helvetica', 14)).pack(side=LEFT)
 
 
     def place_self(self):
-        self.place(relx=0.5, rely=0.5, anchor=CENTER)
+        self.pack(fill='x', anchor='n')

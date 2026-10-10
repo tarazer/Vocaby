@@ -52,7 +52,15 @@ class WordForm(Frame):
         translation = self.translation_entry.get()
         description = self.description_entry.get()
 
+        self.clear_form()
+
         return [word, translation, description]
+
+
+    def clear_form(self):
+        self.word_entry.delete(0, END)
+        self.translation_entry.delete(0, END)
+        self.description_entry.delete(0, END)
 
 
     def place_self(self):

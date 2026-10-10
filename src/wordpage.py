@@ -33,11 +33,10 @@ class WordPage(Frame):
         
     def load(self, id):
         self.current_id = id
-        print('Loading Book ID:', id)
         self.db.c.execute("""SELECT * FROM books WHERE rowid=(?)""", (id,))
         self.current_book = self.db.c.fetchall()
         
-        print(self.current_book)
+        #print(self.current_book)
 
 
     def _load_words(self):
@@ -45,15 +44,22 @@ class WordPage(Frame):
 
 
     def add_word(self, valueList):
+        word =        valueList[0]
+        translation = valueList[1]
+        description = valueList[2]
+        book_id = self.current_id
+        
         valueList.append(self.current_id)
         self.db.c.execute("""
             INSERT INTO words
             VALUES (?,?,?,?)
-        """, (valueList))
-    
-        #we = WordEntry(self, )
-        #we.place_self()
-        #self.current_words.append(we)
+        """, (word, translation, description, book_id))
+
+        self.db.conn.commit()
+
+        wordentry = WordEntry(self, word, translation, description)
+        wordentry.place_self()
+        self.current_words.append(wordentry)
 
 
     def place_self(self):

@@ -41,7 +41,7 @@ class Database():
                 name text,
                 language text,
                 description text
-            )""")        
+            )""")
 
         self.c.execute("""
             CREATE TABLE IF NOT EXISTS words (
