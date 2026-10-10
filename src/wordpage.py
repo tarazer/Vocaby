@@ -1,4 +1,5 @@
 from tkinter import *
+from wordentry import WordEntry
 
 
 class WordPage(Frame):
@@ -15,6 +16,7 @@ class WordPage(Frame):
 
         self.current_book = ''
         self.current_id = None
+        self.current_words = []
 
         self._back_button()
         self._add_word_button()
@@ -35,7 +37,7 @@ class WordPage(Frame):
                     text='Add Word',
                     width=8,
                     height=2,
-                    command=lambda:print('adding word'))
+                    command=lambda:self.pm.show_page('wordform'))
 
         AddWordBtn.place(relx=1, x=-10, y=10, anchor='ne')
 
@@ -53,10 +55,19 @@ class WordPage(Frame):
         pass
 
 
+    def add_word(self):
+        we = WordEntry(self, self.db, )
+        we.place_self()
+        self.current_words.append(we)
+
+        
+
+
     def place_self(self):
         self.place(
             relx=0.5, 
-            rely=0.5, 
-            anchor=CENTER, 
-            relwidth=0.5, 
-            relheight=1)
+            rely=1, 
+            anchor='s', 
+            relwidth=0.6, 
+            relheight=1,
+            height=-70)

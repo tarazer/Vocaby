@@ -2,6 +2,7 @@ from tkinter import *
 
 from taskbar import Taskbar
 from bookform import BookForm
+from wordform import WordForm
 from wordpage import WordPage
 from bookdisplay import BookDisplay
 import logic
@@ -41,9 +42,14 @@ book_creation_form = BookForm(window, pagemanager, book_display)
 book_creation_form.place(relx=0.5, rely=0.5, anchor=CENTER, relwidth=0.5)
 pagemanager.addPage('bookform', book_creation_form)
 
+word_creation_form = WordForm(ListPage, pagemanager, db)
+word_creation_form.place_self()
+pagemanager.addPage('wordform', word_creation_form)
+
 
 # Prepare for app start and start main loop
 book_display.load_books()
+pagemanager.hide_page('wordform') # hide word form
 pagemanager.show_page('home')
 
 window.mainloop()
