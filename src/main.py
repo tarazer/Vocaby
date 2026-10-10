@@ -42,7 +42,7 @@ book_creation_form = BookForm(window, pagemanager, book_display)
 book_creation_form.place(relx=0.5, rely=0.5, anchor=CENTER, relwidth=0.5)
 pagemanager.addPage('bookform', book_creation_form)
 
-word_creation_form = WordForm(ListPage, pagemanager, db)
+word_creation_form = WordForm(wordpage, pagemanager, db)
 word_creation_form.place_self()
 pagemanager.addPage('wordform', word_creation_form)
 

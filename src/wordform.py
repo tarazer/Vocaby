@@ -3,47 +3,56 @@ from tkinter import *
 class WordForm(Frame):
     """Form for adding new words"""
 
-    def __init__(self, parent, pagemanager, database):
-        super().__init__(parent)
-        self.parent = parent
+    def __init__(self, wordpage, pagemanager, database):
+        super().__init__(wordpage.master)
+        self.wp = wordpage
         self.pm = pagemanager
         self.db = database
 
         self.config(bg='cyan')
 
-        self._make_title_entry()
+        self._make_word_entry()
         self._make_translation_entry()
         self._make_description_entry()
         self._make_add_button()
 
 
-    def _make_title_entry(self):
-        title_entry = Entry(self, 
+    def _make_word_entry(self):
+        self.word_entry = Entry(self, 
             font=('Helvetica', 12))
 
-        title_entry.place(anchor='w', rely=0.5, relx=0.025 ,relwidth=0.2) 
+        self.word_entry.place(anchor='w', rely=0.5, relx=0.025 ,relwidth=0.2) 
 
 
     def _make_translation_entry(self):
-        title_entry = Entry(self, 
+        self.translation_entry = Entry(self, 
             font=('Helvetica', 12))
 
-        title_entry.place(anchor='w', rely=0.5, relx=0.25, relwidth=0.2) 
+        self.translation_entry.place(anchor='w', rely=0.5, relx=0.25, relwidth=0.2) 
 
 
     def _make_description_entry(self):
-        title_entry = Entry(self, 
+        self.description_entry = Entry(self, 
             font=('Helvetica', 12))
 
-        title_entry.place(anchor='w', rely=0.5, relx=0.475, relwidth=0.35)
+        self.description_entry.place(anchor='w', rely=0.5, relx=0.475, relwidth=0.35)
 
 
     def _make_add_button(self):
         AddBtn = Button(self,
             font=('Helvetica', 12),
-            text='Add')
+            text='Add',
+            command=lambda:self.wp.add_word(self.get_values()))
 
-        AddBtn.place(anchor='w', rely=0.5, relx=0.85, relwidth=0.125) 
+        AddBtn.place(anchor='w', rely=0.5, relx=0.85, relwidth=0.125)
+
+
+    def get_values(self):
+        word = self.word_entry.get()
+        translation = self.translation_entry.get()
+        description = self.description_entry.get()
+
+        return [word, translation, description]
 
 
     def place_self(self):
