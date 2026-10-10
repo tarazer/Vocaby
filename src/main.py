@@ -3,6 +3,7 @@ from tkinter import *
 from taskbar import Taskbar
 from bookform import BookForm
 from wordpage import WordPage
+from bookdisplay import BookDisplay
 import logic
 
 # Initialize Tkinter, create Window and init managers
@@ -31,7 +32,7 @@ HomeContent.pack(fill='both', expand=True)
 wordpage = WordPage(ListPage, pagemanager, db)
 wordpage.place_self()
 
-book_display = logic.BookBox(HomeContent, pagemanager, db, wordpage)
+book_display = BookDisplay(HomeContent, pagemanager, db, wordpage)
 book_display.place_self()
 
 
@@ -42,7 +43,7 @@ pagemanager.addPage('bookform', book_creation_form)
 
 
 # Prepare for app start and start main loop
-book_display.loadBooks()
+book_display.load_books()
 pagemanager.show_page('home')
 
 window.mainloop()

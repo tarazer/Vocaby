@@ -6,7 +6,6 @@ class PageManager:
     """Manage windows and forms"""
     def __init__(self):
         self.pages = {}
-        self.book_id = None
         
 
     def addPage(self, key, value):
@@ -17,12 +16,7 @@ class PageManager:
         print(self.pages)
 
 
-    def show_page(self, page, id=None):
-        if id == None:
-            pass
-        else:
-            self.book_id = id
-
+    def show_page(self, page):
         self.pages[page].tkraise()
             
 
@@ -44,119 +38,9 @@ class Database():
         #Create Table
         self.c.execute("""
             CREATE TABLE IF NOT EXISTS books (
-                id INTEGER PRIMARY KEY,
                 name text,
                 language text,
                 description text
             )""")
         
         self.conn.commit()
-    
-
-
-
-class BookBox(Frame):
-    """Box that holds and manages all Books 
-    in Homecontent on Homepage"""
-
-    def __init__(self, parent, pagemanager, database, bookp):
-        super().__init__(parent)
-        self.pm = pagemanager
-        self.db = database
-        self.bp = bookp
-
-        self.books = {}
-
-        self.config(
-            bg='lime',
-            )
-
-
-    def addBook(self, valueList):
-        """UI Stuff when new book is added"""
-        if valueList == None: # Guard against empty input
-            print('Title is empty')
-            return None
-
-        # Create Visual of book frame
-        self.placeBook(valueList)
-
-        # Book Frame db entry
-        self.db.c.execute("""
-            INSERT INTO books (name, language, description) VALUES (?, ?, ?)
-            """, (valueList))
-        self.db.conn.commit()
-        
-
-    def placeBook(self, values):
-        id = values[0]
-        title = values[1]
-        language = values[2]
-        description = values[3]
-
-        colorcode = {
-            'None': 'red',
-            'Spanish': 'orange',
-            'Russian': 'blue'
-        }
-
-        BookFrame = Frame(self, bg='white', width=200, height=300, cursor='hand2')
-        BookFrame.pack_propagate(False)
-
-        Title = Label(BookFrame, text=title)
-        Title.pack(anchor='n', pady=5)
-        LangFrame = Frame(BookFrame, bg=colorcode[language], width=180, height=90)
-        LangFrame.pack()
-        Label(BookFrame, text=description, wraplength=180).pack(pady=5)
-        
-        BookFrame.pack(side=LEFT, anchor='n', padx=(0, 20))   
-
-        self.books[BookFrame] = id
-
-        BookFrame.bind('<Button-1>', self.openBook)
-        for c in BookFrame.winfo_children():
-            c.bind('<Button-1>', self.openBook)
-
-
-    def openBook(self, event):
-        try:
-            id = self.books[event.widget]
-        except:
-            id = self.books[event.widget.master]
-        self.pm.show_page('list', id)
-        self.bp.load()
-        
-
-
-    def loadBooks(self):
-        self.db.c.execute("SELECT * FROM books")
-        books = self.db.c.fetchall()
-
-        for b in books:
-            self.placeBook(b)
-
-        print(self.books)
-
-
-    def place_self(self):
-        self.place(relwidth=1, 
-            relheight=1,
-            width=-40,
-            y=20,
-            anchor='center',
-            rely=0.5,
-            relx=0.5,
-            )
-
-
-
-
-
-
-
-
-
-    
-#print(c.fetchone())
-#print(c.fetchmany(5))
-#c.fetchall()
