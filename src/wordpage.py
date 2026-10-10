@@ -7,6 +7,7 @@ class WordPage(Frame):
 
     def __init__(self, parent, pagemanager, database):
         super().__init__(parent)
+        self.parent = parent
         self.pm = pagemanager
         self.db = database
 
@@ -16,16 +17,27 @@ class WordPage(Frame):
         self.current_id = None
 
         self._back_button()
+        self._add_word_button()
 
 
     def _back_button(self):
-        BackBtn = Button(self.pm.pages['list'], 
+        BackBtn = Button(self.parent, 
                     text='back',
                     width=8,
                     height=2,
                     command=lambda:self.pm.hide_page('list'))
 
         BackBtn.place(x=10, y=10)
+
+
+    def _add_word_button(self):
+        AddWordBtn = Button(self.parent,
+                    text='Add Word',
+                    width=8,
+                    height=2,
+                    command=lambda:print('adding word'))
+
+        AddWordBtn.place(relx=1, x=-10, y=10, anchor='ne')
 
         
     def load(self, id):
