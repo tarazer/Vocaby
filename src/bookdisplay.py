@@ -1,5 +1,6 @@
 from tkinter import *
 
+from bookframe import BookFrame
 
 class BookDisplay(Frame):
     """Box that holds and manages all Books 
@@ -28,10 +29,21 @@ class BookDisplay(Frame):
             """, (valueList))
         self.db.conn.commit()
 
-        self.db.c.execute("SELECT rowid,* FROM books WHERE rowid = (SELECT MAX(rowid) FROM books)")
+        self.db.c.execute("""
+            SELECT rowid,* 
+            FROM books 
+            WHERE rowid = (SELECT MAX(rowid) FROM books)
+            """)
         FullList = self.db.c.fetchone()
         self.place_book(FullList)
-        
+
+
+    def delete_book(self, book_frame):
+        id = self.books[book_frame]
+        self.db.c.execute("""DELETE FROM books WHERE rowid=(?)""", (id,))
+        self.db.conn.commit()
+
+        book_frame.destroy()        
 
     def place_book(self, values):
         id =            values[0]
@@ -39,34 +51,17 @@ class BookDisplay(Frame):
         language =      values[2]
         description =   values[3]
 
-        colorcode = {'None': 'red','Spanish': 'orange','Russian': 'blue'}
-
-        book_frame = Frame(self, bg='white', width=200, height=300, cursor='hand2')
-        book_frame.pack_propagate(False)
-
-        # Child Wigets of book_frame
-        Label(book_frame, text=title, width=22).pack(pady=(5,0))
-        LangFrame = Frame(book_frame, bg=colorcode[language], width=180, height=90).pack(pady=(5,0))
-        Label(book_frame, text=description, width=22, wraplength=170).pack(pady=(5,0))
+        book_frame = BookFrame(self, title, language, description)
 
         # Place Bookframe and assign itself as key to a id value
         book_frame.pack(side=LEFT, anchor='n', padx=(0, 20))   
         self.books[book_frame] = id
 
-        # Bind openBook to frame and all its children so wherever clicked, it triggers
-        book_frame.bind('<Button-1>', self.openBook)
-        for child in book_frame.winfo_children():
-            child.bind('<Button-1>', self.openBook)
-
 
     def openBook(self, event):
-        try:
-            id = self.books[event.widget]
-        except:
-            id = self.books[event.widget.master]
+        id = self.books[event.widget.master]
         self.pm.show_page('list')
         self.wp.load(id)
-        
 
 
     def load_books(self):

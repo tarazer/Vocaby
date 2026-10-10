@@ -2,9 +2,9 @@ from tkinter import *
 
 from taskbar import Taskbar
 from bookform import BookForm
+from bookdisplay import BookDisplay
 from wordform import WordForm
 from wordpage import WordPage
-from bookdisplay import BookDisplay
 import logic
 
 # Initialize Tkinter, create Window and init managers

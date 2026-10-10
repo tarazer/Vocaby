@@ -16,13 +16,19 @@ class BookForm(Frame):
         self.TitleFrame = Frame(self, bg="yellow")
         self.ContentFrame = Frame(self, bg="orange")
 
-        self._make_labels()
-        self._make_text()
-        self._make_buttons()
+        self._make_title()
+
+        self._make_name_entry()
+        self._make_description_entry()
+        self._make_dropdown()
+
+        self._make_cancel_button()
+        self._make_create_button()
+        
         self._make_frames()
     
 
-    def _make_labels(self):
+    def _make_title(self):
         Label(self.TitleFrame, 
             text='CREATE NEW BOOK', 
             font=('Helvetica', 24), 
@@ -30,45 +36,57 @@ class BookForm(Frame):
             ).pack()
 
 
-    def _make_buttons(self):
+    def _make_name_entry(self):
+        self.name = Entry(self.ContentFrame, 
+            width=10, 
+            font=('Helvetica', 18)
+            )
+        self.name.place(relx=0.5, rely=0.1, anchor=CENTER, relwidth=0.5)
+
+
+    def _make_description_entry(self):
+        self.Description = Text(self.ContentFrame,
+            font=('Helevetica', 12),)
+        self.Description.place(relx=0.5, 
+            rely=0.5, 
+            anchor=CENTER, 
+            relwidth=1, 
+            width=-20, 
+            relheight=0.5,)
+
+
+    def _make_dropdown(self):
+        dropdown_options = {'None': 'no', 'Spanish':'sp', 'Russian': 'rus'}
+        self.language_var = StringVar()
+        self.language_var.set("None") # default
+        dropdown = OptionMenu(self.ContentFrame, 
+            self.language_var, 
+            *dropdown_options.keys(),
+            )
+        dropdown.place(relx=1, rely=0.1, anchor='e', x=-10)
+        dropdown.place(relx=1, rely=0.1, anchor='e', x=-10)
+
+        # 
+        dropdown.config(font=("Helvetica", 14))
+        dropdown["menu"].config(font=("Helvetica", 14)) 
+
+
+    def _make_cancel_button(self):
         CancelBtn = Button(self.ContentFrame,
             text='Cancel',
             height=2,
             width=8,
-            command=lambda:self.pm.hide_page('bookform'),
+            command=self.clear_form,
             ).place(anchor='sw', rely=1, x=10, y=-10)
 
+    
+    def _make_create_button(self):
         CreateBtn = Button(self.ContentFrame,
             text='Create',
             height=2,
             width=8,
             command=lambda:self.bb.addBook(self.get_values()),
             ).place(anchor='se', rely=1, relx=1, x=-10, y=-10)
-
-        # DEFINETLY CLEAN UP
-        dropdown_options = {'None': 'no', 'Spanish':'sp', 'Russian': 'rus'}
-        self.language_var = StringVar()
-        self.language_var.set("None") # default
-        self.Language = OptionMenu(self.ContentFrame, 
-            self.language_var, 
-            *dropdown_options.keys(),
-            )
-        self.Language.place(relx=1, rely=0.1, anchor='e', x=-10)
-        self.Language.config(font=("Helvetica", 14))
-        self.Language["menu"].config(font=("Helvetica", 14)) 
-            
-
-    def _make_text(self):
-        self.Title = Entry(self.ContentFrame, 
-            width=10, 
-            font=('Helvetica', 18)
-            )
-        self.Title.place(relx=0.5, rely=0.1, anchor=CENTER, relwidth=0.5)
-
-        self.Description = Text(self.ContentFrame,
-            font=('Helevetica', 12),
-            )
-        self.Description.place(relx=0.5, rely=0.5, anchor=CENTER, relwidth=1, width=-20, relheight=0.5,)
 
 
     def _make_frames(self):
@@ -77,11 +95,20 @@ class BookForm(Frame):
 
 
     def get_values(self):
-        title = self.Title.get()
+        name = self.name.get()
         language = self.language_var.get()
         description = self.Description.get('1.0', 'end-1c')
 
-        if title == '':
+        if name == '':
             return None
 
-        return [title, language, description]
+        self.clear_form()
+
+        return [name, language, description]
+
+
+    def clear_form(self):
+        self.pm.hide_page('bookform')
+        self.name.delete(0, END)
+        self.Description.delete('1.0', END)
+        self.language_var.set('None')
