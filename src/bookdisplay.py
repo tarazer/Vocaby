@@ -1,4 +1,5 @@
 from tkinter import *
+import math
 
 from bookframe import BookFrame
 
@@ -13,6 +14,9 @@ class BookDisplay(Frame):
         self.wp = wordpage
 
         self.books = {}
+
+        self.prev_columns = None
+        self.prev_num = None
 
         self.config(bg='lime',)
 
@@ -36,6 +40,7 @@ class BookDisplay(Frame):
             """)
         FullList = self.db.c.fetchone()
         self.place_book(FullList)
+        self.load_books()
 
 
     def delete_book(self, book_frame):
@@ -46,7 +51,7 @@ class BookDisplay(Frame):
         book_frame.destroy()        
 
 
-    def place_book(self, values):
+    def place_book(self, values, row=0, column=0):
         id =            values[0]
         title =         values[1]
         language =      values[2]
@@ -55,7 +60,7 @@ class BookDisplay(Frame):
         book_frame = BookFrame(self, title, language, description)
 
         # Place Bookframe and assign itself as key to a id value
-        book_frame.pack(side=LEFT, anchor='n', padx=(0, 20))   
+        book_frame.grid(row=row, column=column,padx=(0, 20), pady=(0,20))   
         self.books[book_frame] = id
 
 
@@ -65,12 +70,45 @@ class BookDisplay(Frame):
         self.wp.load(id)
 
 
-    def load_books(self):
+    def load_books(self, event=None):
         self.db.c.execute("SELECT rowid,* FROM books")
         book_values = self.db.c.fetchall()
 
-        for values in book_values:
-            self.place_book(values)
+        rows, columns = self.get_dimensions(len(book_values))
+        row = column = 0
+
+        if columns != self.prev_columns:
+            for book in self.winfo_children():
+                book.destroy()
+        
+
+        if columns != self.prev_columns or len(book_values) != self.prev_num:
+        
+            for values in book_values:
+                if column >= columns:
+                    row+=1
+                    column = 0
+                self.place_book(values, row, column)
+                column+=1
+
+        self.prev_columns = columns
+        self.prev_num = len(book_values)
+        self.prev_num = len(book_values)
+
+
+
+
+    def get_dimensions(self, num_elements):
+        """Get amount of columns fit and how many rows 
+        it needs with current display width"""
+        self.master.update()
+        width = self.winfo_width()
+        print(width)
+
+        columns = width // 220
+        rows = math.ceil(num_elements / columns)
+        
+        return rows, columns
 
 
     def place_self(self):
@@ -81,3 +119,5 @@ class BookDisplay(Frame):
             anchor='center',
             rely=0.5,
             relx=0.5,)
+
+        

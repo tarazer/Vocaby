@@ -7,6 +7,7 @@ from wordform import WordForm
 from wordpage import WordPage
 import logic
 
+
 # Initialize Tkinter, create Window and init managers
 window = Tk()
 window.geometry('800x400')
@@ -37,6 +38,21 @@ book_display = BookDisplay(HomeContent, pagemanager, db, wordpage)
 book_display.place_self()
 
 
+
+
+def schedule_work(event):
+    # Cancel any previously scheduled function call
+    if hasattr(window, 'after_id') and window.after_id:
+        window.after_cancel(root.window)
+    
+    # Schedule the function to run after a delay (e.g., 500ms)
+    # This ensures it only runs when resizing stops
+    window.after_id = window.after(30, book_display.load_books())
+
+
+
+
+
 # Create Forms
 book_creation_form = BookForm(window, pagemanager, book_display)
 book_creation_form.place(relx=0.5, rely=0.5, anchor=CENTER, relwidth=0.5)
@@ -49,9 +65,13 @@ pagemanager.addPage('wordform', word_creation_form)
 
 # Prepare for app start and start main loop
 book_display.load_books()
+book_display.bind('<Configure>', schedule_work)
 #pagemanager.hide_page('wordform') # hide word form
 pagemanager.show_page('home')
 
 window.mainloop()
 
 db.conn.close()
+
+
+
