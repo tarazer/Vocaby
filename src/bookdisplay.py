@@ -103,9 +103,10 @@ class BookDisplay(Frame):
         it needs with current display width"""
         self.master.update()
         width = self.winfo_width()
-        print(width)
 
         columns = width // 220
+        if columns < 1:
+            columns = num_elements
         rows = math.ceil(num_elements / columns)
         
         return rows, columns

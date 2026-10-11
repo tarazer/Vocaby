@@ -19,6 +19,7 @@ class WordPage(Frame):
         self.current_words = []
 
         self._back_button()
+        self._make_book_label()
 
 
     def _back_button(self):
@@ -30,11 +31,22 @@ class WordPage(Frame):
 
         BackBtn.place(x=10, y=10)
 
+
+    def _make_book_label(self):
+        self.book_label = Label(self.parent,
+                        text=self.current_book,
+                        bg='green',
+                        font=('Helvetica', 14),)
+
+        self.book_label.place(y=20, relx=0.5, anchor='n')
+
         
     def load(self, id):
         self.current_id = id
         self.db.c.execute("""SELECT * FROM books WHERE rowid=(?)""", (id,))
-        self.current_book = self.db.c.fetchall()
+        self.current_book = self.db.c.fetchone()[0]
+
+        self.book_label.config(text=self.current_book)
         
         #print(self.current_book)
 
@@ -44,10 +56,10 @@ class WordPage(Frame):
 
 
     def add_word(self, valueList):
-        word =        valueList[0]
-        translation = valueList[1]
-        description = valueList[2]
-        book_id = self.current_id
+        word =          valueList[0]
+        translation =   valueList[1]
+        description =   valueList[2]
+        book_id =       self.current_id
         
         valueList.append(self.current_id)
         self.db.c.execute("""
