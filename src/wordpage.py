@@ -27,7 +27,7 @@ class WordPage(Frame):
                     text='back',
                     width=8,
                     height=2,
-                    command=lambda:self.pm.hide_page('list'))
+                    command=self._clear_page)
 
         BackBtn.place(x=10, y=10)
 
@@ -43,17 +43,25 @@ class WordPage(Frame):
         
     def load(self, id):
         self.current_id = id
-        self.db.c.execute("""SELECT * FROM books WHERE rowid=(?)""", (id,))
+        self.db.c.execute("""SELECT name FROM books WHERE rowid=(?)""", (id,))
         self.current_book = self.db.c.fetchone()[0]
 
         self.book_label.config(text=self.current_book)
+
+        self._load_words()
         
         #print(self.current_book)
 
 
     def _load_words(self):
-        pass
+        self.db.c.execute("""SELECT * FROM words WHERE book_id=(?)""", (self.current_id,))
+        word_info = self.db.c.fetchall()
 
+        for word in word_info:
+            wordentry = WordEntry(self, word[0], word[1], word[2])
+            wordentry.place_self()
+            self.current_words.append(wordentry)
+        
 
     def add_word(self, valueList):
         word =          valueList[0]
@@ -72,6 +80,14 @@ class WordPage(Frame):
         wordentry = WordEntry(self, word, translation, description)
         wordentry.place_self()
         self.current_words.append(wordentry)
+
+
+    def _clear_page(self):
+        self.pm.hide_page('list')
+        for word in self.current_words:
+            word.destroy()
+
+        self.current_words = []
 
 
     def place_self(self):

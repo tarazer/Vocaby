@@ -13,8 +13,8 @@ class WordEntry(Frame):
 
     def _make_entry(self, word, translation, description):
         for i in [word, translation, description]:
-            Label(self, text=i, font=('Helvetica', 14)).pack(side=LEFT)
+            Label(self, text=i, font=('Helvetica', 14)).pack(side=LEFT, padx=(5,0))
 
 
     def place_self(self):
-        self.pack(fill='x', anchor='n')
+        self.pack(fill='x', anchor='n', ipady=5, ipadx=5)
