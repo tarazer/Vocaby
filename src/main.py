@@ -19,10 +19,10 @@ db = logic.Database()
 HomePage = Frame(window)
 pagemanager.addPage('home', HomePage)
 
-ListPage = Frame(window)
-pagemanager.addPage('list', ListPage)
+OpenBookPage = Frame(window)
+pagemanager.addPage('list', OpenBookPage)
 
-for page in (HomePage, ListPage):
+for page in (HomePage, OpenBookPage):
     page.place(x=0, y=0, relwidth=1, relheight=1)
 
 
@@ -31,7 +31,7 @@ bar = Taskbar(HomePage, pagemanager).pack(fill='x')
 HomeContent = Frame(HomePage, bg="purple")
 HomeContent.pack(fill='both', expand=True)
 
-wordpage = WordPage(ListPage, pagemanager, db)
+wordpage = WordPage(OpenBookPage, pagemanager, db)
 wordpage.place_self()
 
 book_display = BookDisplay(HomeContent, pagemanager, db, wordpage)
@@ -39,17 +39,12 @@ book_display.place_self()
 
 
 
-
-def schedule_work(event):
-    # Cancel any previously scheduled function call
-    if hasattr(window, 'after_id') and window.after_id:
-        window.after_cancel(root.window)
+def on_resize(event):
+    """Runs after window has been resized and then calls - to update layout"""
+    if hasattr(window, 'after_id') and window.after_id is not None:
+        window.after_cancel(window.after_id)
     
-    # Schedule the function to run after a delay (e.g., 500ms)
-    # This ensures it only runs when resizing stops
-    window.after_id = window.after(30, book_display.load_books())
-
-
+    window.after_id = window.after(50, book_display.load_books)
 
 
 
@@ -65,7 +60,7 @@ pagemanager.addPage('wordform', word_creation_form)
 
 # Prepare for app start and start main loop
 book_display.load_books()
-book_display.bind('<Configure>', schedule_work)
+book_display.bind('<Configure>', on_resize)
 #pagemanager.hide_page('wordform') # hide word form
 pagemanager.show_page('home')
 

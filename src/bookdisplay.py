@@ -96,8 +96,6 @@ class BookDisplay(Frame):
         self.prev_num = len(book_values)
 
 
-
-
     def get_dimensions(self, num_elements):
         """Get amount of columns fit and how many rows 
         it needs with current display width"""
@@ -106,7 +104,7 @@ class BookDisplay(Frame):
 
         columns = width // 220
         if columns < 1:
-            columns = num_elements
+            columns = 1
         rows = math.ceil(num_elements / columns)
         
         return rows, columns

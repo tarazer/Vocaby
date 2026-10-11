@@ -87,7 +87,7 @@ class WordPage(Frame):
         for word in self.current_words:
             word.destroy()
 
-        self.current_words = []
+        self.current_words.clear()
 
 
     def place_self(self):
