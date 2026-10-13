@@ -1,7 +1,7 @@
 from tkinter import *
 import math
 
-from bookframe import BookFrame
+from .bookframe import BookFrame
 
 class BookDisplay(Frame):
     """Box that holds and manages all Books 
@@ -12,43 +12,42 @@ class BookDisplay(Frame):
         self.pm = pagemanager
         self.db = database
         self.wp = wordpage
+        
+        self.books = {} 
 
-        self.books = {}
-
+        # For checking if column or amount elements
+        # matches previous reload so it doesnt get 
+        # reloaded each time screen is resized
         self.prev_columns = None
         self.prev_num = None
 
         self.config(bg='lime',)
 
 
-    def addBook(self, valueList):
+    def addBook(self, values):
         """UI Stuff when new book is added"""
-        if valueList == None: # Guard against empty input
+        if values == None: # Guard against empty input
             print('Title is empty')
             return None
 
         # Book Frame db entry and creating visual of book frame        
-        self.db.c.execute("""
-            INSERT INTO books (name, language, description) VALUES (?, ?, ?)
-            """, (valueList))
-        self.db.conn.commit()
+        self.db.insert_new_book(values)
 
         self.db.c.execute("""
             SELECT rowid,* 
             FROM books 
             WHERE rowid = (SELECT MAX(rowid) FROM books)
             """)
-        FullList = self.db.c.fetchone()
-        self.place_book(FullList)
+        full_values = self.db.c.fetchone()
+        self.place_book(full_values)
+        self.db.book_values.append(full_values)
         self.load_books()
 
 
     def delete_book(self, book_frame):
         id = self.books[book_frame]
-        self.db.c.execute("""DELETE FROM books WHERE rowid=(?)""", (id,))
-        self.db.conn.commit()
-
-        book_frame.destroy()        
+        self.db.removed_book_ids.append(id)
+        book_frame.destroy()
 
 
     def place_book(self, values, row=0, column=0):
@@ -70,21 +69,19 @@ class BookDisplay(Frame):
         self.wp.load(id)
 
 
-    def load_books(self, event=None):
-        self.db.c.execute("SELECT rowid,* FROM books")
-        book_values = self.db.c.fetchall()
-
+    def load_books(self, event=None):  
+        book_values = self.db.book_values[:]
+        
         rows, columns = self.get_dimensions(len(book_values))
         row = column = 0
 
         if columns != self.prev_columns:
             for book in self.winfo_children():
                 book.destroy()
-        
 
         if columns != self.prev_columns or len(book_values) != self.prev_num:
-        
             for values in book_values:
+                
                 if column >= columns:
                     row+=1
                     column = 0
@@ -93,12 +90,11 @@ class BookDisplay(Frame):
 
         self.prev_columns = columns
         self.prev_num = len(book_values)
-        self.prev_num = len(book_values)
 
 
     def get_dimensions(self, num_elements):
         """Get amount of columns fit and how many rows 
-        it needs with current display width"""
+        it needs with current display width"""        
         self.master.update()
         width = self.winfo_width()
 

@@ -1,5 +1,5 @@
 from tkinter import *
-from wordentry import WordEntry
+from .wordentry import WordEntry
 
 
 class WordPage(Frame):
@@ -49,8 +49,6 @@ class WordPage(Frame):
         self.book_label.config(text=self.current_book)
 
         self._load_words()
-        
-        #print(self.current_book)
 
 
     def _load_words(self):

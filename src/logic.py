@@ -55,3 +55,21 @@ class Database():
             )""")
         
         self.conn.commit()
+
+        # For Book Display
+        self.removed_book_ids = []
+        self.c.execute("SELECT rowid,* FROM books")      
+        self.book_values = self.c.fetchall()
+
+
+    def insert_new_book(self, valueList):
+        self.c.execute("""
+            INSERT INTO books (name, language, description) VALUES (?, ?, ?)
+            """, (valueList))
+        self.conn.commit()
+
+
+    def delete_removed_books(self):
+        for id in self.removed_book_ids:
+            self.c.execute("""DELETE FROM books WHERE rowid=(?)""", (id,))
+            self.conn.commit()

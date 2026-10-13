@@ -1,10 +1,10 @@
 from tkinter import *
 
-from taskbar import Taskbar
-from bookform import BookForm
-from bookdisplay import BookDisplay
-from wordform import WordForm
-from wordpage import WordPage
+from homepage.taskbar import Taskbar
+from homepage.bookform import BookForm
+from homepage.bookdisplay import BookDisplay
+from openbookpage.wordform import WordForm
+from openbookpage.wordpage import WordPage
 import logic
 
 
@@ -66,6 +66,7 @@ pagemanager.show_page('home')
 
 window.mainloop()
 
+db.delete_removed_books()
 db.conn.close()
 
 
