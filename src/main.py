@@ -31,8 +31,6 @@ bar = Taskbar(HomePage, pagemanager).pack(fill='x')
 HomeContent = Frame(HomePage, bg="purple")
 HomeContent.pack(fill='both', expand=True)
 
-asset = PhotoImage(file='assets/MeadowObservation.png')
-Label(OpenBookPage, image=asset).place(relwidth=1, relheight=1)
 
 wordpage = WordPage(OpenBookPage, pagemanager, db)
 wordpage.place_self()
