@@ -31,12 +31,14 @@ bar = Taskbar(HomePage, pagemanager).pack(fill='x')
 HomeContent = Frame(HomePage, bg="purple")
 HomeContent.pack(fill='both', expand=True)
 
+asset = PhotoImage(file='assets/MeadowObservation.png')
+Label(OpenBookPage, image=asset).place(relwidth=1, relheight=1)
+
 wordpage = WordPage(OpenBookPage, pagemanager, db)
 wordpage.place_self()
 
 book_display = BookDisplay(HomeContent, pagemanager, db, wordpage)
 book_display.place_self()
-
 
 
 def on_resize(event):
@@ -58,6 +60,9 @@ word_creation_form.place_self()
 pagemanager.addPage('wordform', word_creation_form)
 
 
+
+
+
 # Prepare for app start and start main loop
 book_display.load_books()
 book_display.bind('<Configure>', on_resize)
@@ -67,6 +72,7 @@ pagemanager.show_page('home')
 window.mainloop()
 
 db.delete_removed_books()
+db.delete_removed_words()
 db.conn.close()
 
 

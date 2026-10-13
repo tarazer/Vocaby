@@ -18,7 +18,6 @@ class PageManager:
 
     def show_page(self, page):
         self.pages[page].tkraise()
-            
 
     def hide_page(self, page):
         self.pages[page].lower()
@@ -47,7 +46,6 @@ class Database():
             CREATE TABLE IF NOT EXISTS words (
                 word text,
                 translation text,
-                description text,
                 book_id INTEGER,
                 FOREIGN KEY (book_id) REFERENCES books(rowid)
                     ON DELETE CASCADE
@@ -61,6 +59,9 @@ class Database():
         self.c.execute("SELECT rowid,* FROM books")      
         self.book_values = self.c.fetchall()
 
+        # For Word Page
+        self.removed_word_ids = []
+
 
     def insert_new_book(self, valueList):
         self.c.execute("""
@@ -72,4 +73,15 @@ class Database():
     def delete_removed_books(self):
         for id in self.removed_book_ids:
             self.c.execute("""DELETE FROM books WHERE rowid=(?)""", (id,))
+            self.conn.commit()    
+
+    def delete_removed_words(self):
+        for id in self.removed_word_ids:
+            print(id)
+            self.c.execute("""DELETE FROM words WHERE rowid=(?)""", (id,))
             self.conn.commit()
+
+
+    def get_book_by_id(self, id):
+        self.c.execute("""SELECT name FROM books WHERE rowid=(?)""", (id,))
+        return self.c.fetchone()[0]

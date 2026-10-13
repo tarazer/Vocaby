@@ -14,6 +14,8 @@ class WordPage(Frame):
 
         self.config(bg='grey')
 
+        self.words = {}
+
         self.current_book = ''
         self.current_id = None
         self.current_words = []
@@ -43,40 +45,46 @@ class WordPage(Frame):
         
     def load(self, id):
         self.current_id = id
-        self.db.c.execute("""SELECT name FROM books WHERE rowid=(?)""", (id,))
-        self.current_book = self.db.c.fetchone()[0]
-
+        self.current_book = self.db.get_book_by_id(id)
         self.book_label.config(text=self.current_book)
 
         self._load_words()
 
 
     def _load_words(self):
-        self.db.c.execute("""SELECT * FROM words WHERE book_id=(?)""", (self.current_id,))
+        self.db.c.execute("""SELECT rowid,* FROM words WHERE book_id=(?)""", (self.current_id,))
         word_info = self.db.c.fetchall()
 
         for word in word_info:
-            wordentry = WordEntry(self, word[0], word[1], word[2])
+            wordentry = WordEntry(self, word[1], word[2])
             wordentry.place_self()
             self.current_words.append(wordentry)
+
+            self.words[wordentry] = word[0]
         
 
     def add_word(self, valueList):
         word =          valueList[0]
         translation =   valueList[1]
-        description =   valueList[2]
         book_id =       self.current_id
         
         valueList.append(self.current_id)
         self.db.c.execute("""
             INSERT INTO words
-            VALUES (?,?,?,?)
-        """, (word, translation, description, book_id))
+            VALUES (?,?,?)
+        """, (word, translation, book_id))
 
         self.db.conn.commit()
 
-        wordentry = WordEntry(self, word, translation, description)
+        self.db.c.execute("""
+            SELECT rowid
+            FROM books 
+            WHERE rowid = (SELECT MAX(rowid) FROM books)
+            """)
+
+        wordentry = WordEntry(self, word, translation)
         wordentry.place_self()
+        self.words[wordentry] = self.db.c.fetchone()
         self.current_words.append(wordentry)
 
 
@@ -85,7 +93,15 @@ class WordPage(Frame):
         for word in self.current_words:
             word.destroy()
 
+        self.db.delete_removed_words()
         self.current_words.clear()
+        self.words.clear()
+
+
+    def delete_entry(self, event):
+        we = event.widget.master
+        self.db.removed_word_ids.append(self.words[we])
+        we.destroy()
 
 
     def place_self(self):

@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import messagebox
 import math
 
 from .bookframe import BookFrame
@@ -45,9 +46,11 @@ class BookDisplay(Frame):
 
 
     def delete_book(self, book_frame):
-        id = self.books[book_frame]
-        self.db.removed_book_ids.append(id)
-        book_frame.destroy()
+        result = messagebox.askyesno(message="Are you sure you want to delete the book?", default='no', icon='warning', detail="This action cannot be undone.")
+        if result == True:
+            id = self.books[book_frame]
+            self.db.removed_book_ids.append(id)
+            book_frame.destroy()
 
 
     def place_book(self, values, row=0, column=0):
