@@ -32,14 +32,14 @@ class BookDisplay(Frame):
             return None
 
         # Book Frame db entry and creating visual of book frame        
-        self.db.insert_new_book(values)
+        self.db.insert_new_values('books', values)
 
-        self.db.c.execute("""
-            SELECT rowid,* 
-            FROM books 
-            WHERE rowid = (SELECT MAX(rowid) FROM books)
-            """)
-        full_values = self.db.c.fetchone()
+        #self.db.c.execute("""
+        #    SELECT rowid,* 
+        #    FROM books 
+        #    WHERE rowid = (SELECT MAX(rowid) FROM books)
+        #    """)
+        full_values = self.db.get_newest_entry('books')
         self.place_book(full_values)
         self.db.book_values.append(full_values)
         self.load_books()
@@ -51,6 +51,10 @@ class BookDisplay(Frame):
             id = self.books[book_frame]
             self.db.removed_book_ids.append(id)
             book_frame.destroy()
+
+            for book in self.db.book_values:
+                if book[0] == id:
+                    self.db.book_values.remove(book)
 
 
     def place_book(self, values, row=0, column=0):
@@ -73,7 +77,7 @@ class BookDisplay(Frame):
 
 
     def load_books(self, event=None):  
-        book_values = self.db.book_values[:]
+        book_values = self.db.book_values
         
         rows, columns = self.get_dimensions(len(book_values))
         row = column = 0

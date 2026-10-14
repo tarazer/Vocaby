@@ -63,10 +63,9 @@ class Database():
         self.removed_word_ids = []
 
 
-    def insert_new_book(self, valueList):
-        self.c.execute("""
-            INSERT INTO books (name, language, description) VALUES (?, ?, ?)
-            """, (valueList))
+    def insert_new_values(self, table, values):
+        query = f"INSERT INTO {table} VALUES (?, ?, ?)"
+        self.c.execute(query, (values))
         self.conn.commit()
 
 
@@ -85,3 +84,23 @@ class Database():
     def get_book_by_id(self, id):
         self.c.execute("""SELECT name FROM books WHERE rowid=(?)""", (id,))
         return self.c.fetchone()[0]
+
+
+    def get_words_by_id(self, id):
+        self.c.execute("""
+                            SELECT rowid,* 
+                            FROM words 
+                            WHERE book_id=(?)""", (id,))
+
+        return self.c.fetchall()
+
+
+    def get_newest_entry(self, table):
+        query = f"""    
+                    SELECT rowid,* 
+                    FROM {table} 
+                    WHERE rowid = (SELECT MAX(rowid) FROM {table})
+                    """
+        self.c.execute(query)
+
+        return self.c.fetchone()

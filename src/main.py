@@ -5,6 +5,7 @@ from homepage.bookform import BookForm
 from homepage.bookdisplay import BookDisplay
 from openbookpage.wordform import WordForm
 from openbookpage.wordpage import WordPage
+from openbookpage.openbook_ui import UI_OpenBook
 import logic
 
 
@@ -35,7 +36,9 @@ HomeContent.pack(fill='both', expand=True)
 wordpage = WordPage(OpenBookPage, pagemanager, db)
 wordpage.place_self()
 
-book_display = BookDisplay(HomeContent, pagemanager, db, wordpage)
+ui_op = UI_OpenBook(OpenBookPage, db, pagemanager, wordpage)
+
+book_display = BookDisplay(HomeContent, pagemanager, db, ui_op)
 book_display.place_self()
 
 
@@ -56,7 +59,6 @@ pagemanager.addPage('bookform', book_creation_form)
 word_creation_form = WordForm(wordpage, pagemanager, db)
 word_creation_form.place_self()
 pagemanager.addPage('wordform', word_creation_form)
-
 
 
 
