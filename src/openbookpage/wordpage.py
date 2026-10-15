@@ -29,13 +29,22 @@ class WordPage(Frame):
 
     def _load_words(self):
         word_values = self.db.get_words_by_id(self.current_id)
+        print(word_values)
 
-        for word in word_values:
+        rows = self.winfo_height() // 40 - 2
+        pages = len(word_values) / rows 
+
+        for word in word_values[0:rows]:
             wordentry = WordEntry(self, word[1], word[2])
             wordentry.place_self()
-
-            self.current_words[wordentry] = word[0]
+            self.current_words[wordentry] = word
             wordentry.bind('<Button-1>', self.edit_word)
+
+
+    def _clear_words(self):
+        for word in self.current_words:
+            word.destroy()
+            self.current_words.clear()
         
 
     def add_word(self, values):
@@ -45,10 +54,11 @@ class WordPage(Frame):
 
         self.db.insert_new_values('words', [word, translation, book_id])
 
-        wordentry = WordEntry(self, word, translation)
-        wordentry.place_self()
-        self.current_words[wordentry] = self.db.get_newest_entry('words')[0]
-        wordentry.bind('<Button-1>', self.edit_word)
+        #wordentry = WordEntry(self, word, translation)
+        #wordentry.place_self()
+        #self.current_words[wordentry] = self.db.get_newest_entry('words')[0]
+
+        #wordentry.bind('<Button-1>', self.edit_word)
 
 
     def clear_page(self):
@@ -73,16 +83,27 @@ class WordPage(Frame):
         self.wef.word.insert(0, w.word.cget('text'))
         self.wef.translation.insert(0, w.translation.cget('text'))
 
+        #self.parent.bind('<esc>', self.confirm)
         # Bind key to canceling and enter to confirming and unbind after shi is done
 
 
     def delete_word(self):
         w = self.current_inspected_word
         if w != None:
-            self.db.removed_word_ids.append(self.current_words[w])
+            print(self.current_words[w][0])
+            self.db.delete_id_from_table('words', self.current_words[w][0])
+            del self.current_words[w]
             self.wef.clear_entries()
             self.wef.place_forget()
             w.destroy()
+            self._clear_words()
+            self._load_words()
+
+        self.current_inspected_word = None
+
+
+    def confirm(self, event):
+        print('triggered')
 
 
     def place_self(self):
