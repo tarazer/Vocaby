@@ -1,6 +1,7 @@
 from tkinter import *
 from .wordentry import WordEntry
 from .word_editor import WordEditorForm
+import math
 
 
 class WordPage(Frame):
@@ -17,59 +18,86 @@ class WordPage(Frame):
         self.wef = WordEditorForm(self)
         pagemanager.addPage('editwordform', self.wef)
 
-        self.current_words = {}
-        self.current_id = id
+        self.word_values = []
+        self.word_entries = []
+        self.current_id = None
         self.current_inspected_word = None
+        self.current_page = 1
 
+        self.rows = 0
+
+
+    def make_entries(self):
+        rows = self.winfo_height() // 40 - 2
         
+        if rows > self.rows: # More rows then previously
+            for _ in range(rows-self.rows):
+                wordentry = WordEntry(self)
+                wordentry.place_self()
+                self.word_entries.append(wordentry)
+                wordentry.bind('<Button-1>', self.edit_word)
+
+        elif rows < self.rows: # less rows then previously
+            for _ in range(self.rows - rows):
+                we = self.word_entries.pop()
+                we.clear()
+                we.destroy()
+
+        self.rows = rows
+
+
+    def calc_page(self):
+        pages = math.ceil(len(self.word_values) / self.rows)
+        if pages <= 0:
+            pages = 1
+
+        self.pages = pages
+
+
     def load(self, id):
         self.current_id = id
-        self._load_words()
+        self.word_values = self.db.get_words_by_id(self.current_id)
+
+        self.make_entries()
+        self.calc_page()
+        self._insert_words()
 
 
-    def _load_words(self):
-        word_values = self.db.get_words_by_id(self.current_id)
-        print(word_values)
+    def _insert_words(self):
+        rows = self.rows
+        page = self.current_page
+    
+        values = self.word_values[(page-1) * rows:page * rows]
 
-        rows = self.winfo_height() // 40 - 2
-        pages = len(word_values) / rows 
-
-        for word in word_values[0:rows]:
-            wordentry = WordEntry(self, word[1], word[2])
-            wordentry.place_self()
-            self.current_words[wordentry] = word
-            wordentry.bind('<Button-1>', self.edit_word)
-
-
-    def _clear_words(self):
-        for word in self.current_words:
-            word.destroy()
-            self.current_words.clear()
-        
-
-    def add_word(self, values):
-        word =          values[0]
-        translation =   values[1]
-        book_id =       self.current_id
-
-        self.db.insert_new_values('words', [word, translation, book_id])
-
-        #wordentry = WordEntry(self, word, translation)
-        #wordentry.place_self()
-        #self.current_words[wordentry] = self.db.get_newest_entry('words')[0]
-
-        #wordentry.bind('<Button-1>', self.edit_word)
+        for index, we in enumerate(self.word_entries[0:len(values)]): 
+            # len is fail save if values is smaller than ammount of rows, 
+            # otherwise index error
+            we.insert_labels(values[index])
 
 
     def clear_page(self):
         self.pm.hide_page('list')
         self.pm.hide_page('editwordform')
         self.wef.place_forget()
-        for word in self.current_words:
-            word.destroy()
 
-        self.db.delete_removed_words()
-        self.current_words.clear()
+        for we in self.word_entries:
+            we.clear()
+
+        self.current_page = 1
+
+
+
+
+
+            
+    def add_word(self, values):
+        word =          values[0]
+        translation =   values[1]
+        book_id =       self.current_id
+
+        self.db.insert_new_values('words', [word, translation, book_id])
+        self.word_values.append(self.db.get_newest_entry('words'))
+        self.load(self.current_id)
 
 
     def edit_word(self, event):
@@ -83,26 +111,31 @@ class WordPage(Frame):
         self.wef.word.insert(0, w.word.cget('text'))
         self.wef.translation.insert(0, w.translation.cget('text'))
 
-        #self.parent.bind('<esc>', self.confirm)
+        self.wef.bind_all('<Return>', self.confirm)
         # Bind key to canceling and enter to confirming and unbind after shi is done
 
 
     def delete_word(self):
         w = self.current_inspected_word
         if w != None:
-            print(self.current_words[w][0])
-            self.db.delete_id_from_table('words', self.current_words[w][0])
-            del self.current_words[w]
+            self.db.delete_id_from_table('words', w.id)
+            w.clear()            
             self.wef.clear_entries()
             self.wef.place_forget()
-            w.destroy()
-            self._clear_words()
-            self._load_words()
+            self.load(self.current_id)
 
         self.current_inspected_word = None
 
 
     def confirm(self, event):
+        w = self.current_inspected_word
+
+        word = self.wef.word.get()
+        translation = self.wef.translation.get()
+
+        values = [w.id, word, translation, w.book_id]
+        w.insert_labels(values)
+        self.db.update_values_by_id('words', [word, translation], w.id)
         print('triggered')
 
 

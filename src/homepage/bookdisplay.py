@@ -34,11 +34,6 @@ class BookDisplay(Frame):
         # Book Frame db entry and creating visual of book frame        
         self.db.insert_new_values('books', values)
 
-        #self.db.c.execute("""
-        #    SELECT rowid,* 
-        #    FROM books 
-        #    WHERE rowid = (SELECT MAX(rowid) FROM books)
-        #    """)
         full_values = self.db.get_newest_entry('books')
         self.place_book(full_values)
         self.db.book_values.append(full_values)

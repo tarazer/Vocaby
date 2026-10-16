@@ -70,6 +70,12 @@ class Database():
     def insert_new_values(self, table, values):
         query = f"INSERT INTO {table} VALUES (?, ?, ?)"
         self.c.execute(query, (values))
+        self.conn.commit()    
+
+
+    def update_values_by_id(self, table, values, id):
+        query = f"UPDATE {table} SET word=(?), translation=(?)  WHERE rowid={id}"
+        self.c.execute(query, (values))
         self.conn.commit()
 
 
@@ -87,8 +93,8 @@ class Database():
 
     def delete_id_from_table(self, table, id):
         query = f"DELETE FROM {table} WHERE rowid=(?)"
-        self.conn.commit()
         self.c.execute(query, (id,))
+        self.conn.commit()
 
 
     def get_book_by_id(self, id):
