@@ -111,8 +111,8 @@ class WordPage(Frame):
         self.wef.word.insert(0, w.word.cget('text'))
         self.wef.translation.insert(0, w.translation.cget('text'))
 
-        self.wef.bind_all('<Return>', self.confirm)
-        # Bind key to canceling and enter to confirming and unbind after shi is done
+        self.wef.bind_all('<Return>', self.confirm_wef)
+        self.wef.bind_all('<Escape>', self.cancel_wef)
 
 
     def delete_word(self):
@@ -127,7 +127,7 @@ class WordPage(Frame):
         self.current_inspected_word = None
 
 
-    def confirm(self, event):
+    def confirm_wef(self, event):
         w = self.current_inspected_word
 
         word = self.wef.word.get()
@@ -136,8 +136,23 @@ class WordPage(Frame):
         values = [w.id, word, translation, w.book_id]
         w.insert_labels(values)
         self.db.update_values_by_id('words', [word, translation], w.id)
-        print('triggered')
 
+        self.wef.clear_entries()
+        self.wef.place_forget()
+
+        self.wef.unbind_all('<Return>')
+        self.wef.unbind_all('<Escape>')
+        self.current_inspect_word = None
+
+
+    def cancel_wef(self, event):
+        self.wef.clear_entries()
+        self.wef.place_forget()
+        
+        self.wef.unbind_all('<Return>')
+        self.wef.unbind_all('<Escape>')
+        self.current_inspect_word = None
+        
 
     def place_self(self):
         self.place(

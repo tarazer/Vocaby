@@ -72,7 +72,6 @@ pagemanager.show_page('home')
 window.mainloop()
 
 db.delete_removed_books()
-db.delete_removed_words()
 db.conn.close()
 
 

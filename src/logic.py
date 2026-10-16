@@ -59,13 +59,6 @@ class Database():
         self.c.execute("SELECT rowid,* FROM books")      
         self.book_values = self.c.fetchall()
 
-        # For Word Page
-        self.removed_word_ids = []
-
-
-        # DB temp stuff
-        self.loaded_words = []
-
 
     def insert_new_values(self, table, values):
         query = f"INSERT INTO {table} VALUES (?, ?, ?)"
@@ -82,12 +75,6 @@ class Database():
     def delete_removed_books(self):
         for id in self.removed_book_ids:
             self.c.execute("""DELETE FROM books WHERE rowid=(?)""", (id,))
-            self.conn.commit()    
-
-
-    def delete_removed_words(self):
-        for id in self.removed_word_ids:
-            self.c.execute("""DELETE FROM words WHERE rowid=(?)""", (id,))
             self.conn.commit()
 
 
