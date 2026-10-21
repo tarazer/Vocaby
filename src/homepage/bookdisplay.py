@@ -27,10 +27,7 @@ class BookDisplay(Frame):
 
     def addBook(self, values):
         """UI Stuff when new book is added"""
-        if values == None: # Guard against empty input
-            print('Title is empty')
-            return None
-
+        
         # Book Frame db entry and creating visual of book frame        
         self.db.insert_new_values('books', values)
 
@@ -47,12 +44,21 @@ class BookDisplay(Frame):
             self.db.removed_book_ids.append(id)
             book_frame.destroy()
 
-            for book in self.db.book_values:
+            for book in self.db.book_values[:]:
                 if book[0] == id:
                     self.db.book_values.remove(book)
 
 
+    def openBook(self, event):
+        id = self.books[event.widget.master]
+        self.pm.show_page('list')
+        self.wp.load(id)
+
+
     def place_book(self, values, row=0, column=0):
+        """Place book using values for labels. 
+        Row/Column are provided or default 0 
+        if book is new, as then layout is reloaded asap"""
         id =            values[0]
         title =         values[1]
         language =      values[2]
@@ -65,15 +71,12 @@ class BookDisplay(Frame):
         self.books[book_frame] = id
 
 
-    def openBook(self, event):
-        id = self.books[event.widget.master]
-        self.pm.show_page('list')
-        self.wp.load(id)
-
-
-    def load_books(self, event=None):  
+    def load_books(self):
+        """Get info on how many rows/columns of books on screen
+        and place a box for each book in db"""
         book_values = self.db.book_values
-        
+
+        # Number of availible rows/coumns and creating row/column pointer
         rows, columns = self.get_dimensions(len(book_values))
         row = column = 0
 

@@ -12,20 +12,11 @@ class PageManager:
         self.pages[key] = value
 
 
-    def show_pages(self): # for debugging
-        print(self.pages)
-
-
     def show_page(self, page):
         self.pages[page].tkraise()
 
     def hide_page(self, page):
         self.pages[page].lower()
-
-
-    def openList(self, id):
-        pass
-
 
 
 class Database():
@@ -56,7 +47,7 @@ class Database():
 
         # For Book Display
         self.removed_book_ids = []
-        self.c.execute("SELECT rowid,* FROM books")      
+        self.c.execute("SELECT rowid,* FROM books")
         self.book_values = self.c.fetchall()
 
 
@@ -85,8 +76,8 @@ class Database():
 
 
     def get_book_by_id(self, id):
-        self.c.execute("""SELECT name FROM books WHERE rowid=(?)""", (id,))
-        return self.c.fetchone()[0]
+        self.c.execute("""SELECT rowid,* FROM books WHERE rowid=(?)""", (id,))
+        return self.c.fetchone()
 
 
     def get_words_by_id(self, id):
@@ -105,5 +96,5 @@ class Database():
                     WHERE rowid = (SELECT MAX(rowid) FROM {table})
                     """
         self.c.execute(query)
-
+        
         return self.c.fetchone()

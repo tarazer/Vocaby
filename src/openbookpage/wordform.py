@@ -1,4 +1,5 @@
 from tkinter import *
+from translator import transliterate
 
 class WordForm(Frame):
     """Form for adding new words"""
@@ -20,7 +21,7 @@ class WordForm(Frame):
         self.word_entry = Entry(self, 
             font=('Helvetica', 12))
 
-        self.word_entry.place(anchor='w', rely=0.5, relx=0.025 ,relwidth=0.375) 
+        self.word_entry.place(anchor='w', rely=0.5, relx=0.025 ,relwidth=0.375)
 
 
     def _make_translation_entry(self):

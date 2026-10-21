@@ -56,7 +56,7 @@ class BookForm(Frame):
 
 
     def _make_dropdown(self):
-        dropdown_options = {'None': 'no', 'Spanish':'sp', 'Russian': 'rus'}
+        dropdown_options = {'None': 'no', 'Spanish':'spanish', 'Russian': 'russian'}
         self.language_var = StringVar()
         self.language_var.set("None") # default
         dropdown = OptionMenu(self.ContentFrame, 

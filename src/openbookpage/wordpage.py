@@ -1,6 +1,8 @@
 from tkinter import *
 from .wordentry import WordEntry
 from .word_editor import WordEditorForm
+from .openbook_ui import UI_OpenBook
+from translator import transliterate
 import math
 
 
@@ -15,22 +17,41 @@ class WordPage(Frame):
         self.pm = pagemanager
         self.db = database
 
+        # UI of class
+        self.ui = UI_OpenBook(parent, database, pagemanager, self)
         self.wef = WordEditorForm(self)
         pagemanager.addPage('editwordform', self.wef)
 
+        # Logic of class
         self.word_values = []
         self.word_entries = []
+        
         self.current_id = None
+        self.current_language = None
         self.current_inspected_word = None
         self.current_page = 1
 
         self.rows = 0
+        self.max_page = 1
+
+
+    def load(self, id):
+        self.current_id = id
+        self.current_language = self.db.get_book_by_id(id)[2].lower()
+        self.word_values = self.db.get_words_by_id(self.current_id)
+
+        self.ui.load(id)
+
+        self.make_entries()
+        self.calc_page()
+        self._insert_words()
 
 
     def make_entries(self):
         rows = self.winfo_height() // 40 - 2
         
         if rows > self.rows: # More rows then previously
+            # MAKE IT so IF WORD ENTRIES ALREADY EXIST THEy ARE ShoOWN INSTEASD OF NEW CREATED
             for _ in range(rows-self.rows):
                 wordentry = WordEntry(self)
                 wordentry.place_self()
@@ -41,7 +62,7 @@ class WordPage(Frame):
             for _ in range(self.rows - rows):
                 we = self.word_entries.pop()
                 we.clear()
-                we.destroy()
+                we.pack_forget()
 
         self.rows = rows
 
@@ -51,16 +72,7 @@ class WordPage(Frame):
         if pages <= 0:
             pages = 1
 
-        self.pages = pages
-
-
-    def load(self, id):
-        self.current_id = id
-        self.word_values = self.db.get_words_by_id(self.current_id)
-
-        self.make_entries()
-        self.calc_page()
-        self._insert_words()
+        self.max_page = pages
 
 
     def _insert_words(self):
@@ -73,6 +85,11 @@ class WordPage(Frame):
             # len is fail save if values is smaller than ammount of rows, 
             # otherwise index error
             we.insert_labels(values[index])
+            we.place_self()
+
+        for we in self.word_entries[len(values):]:
+            we.clear()
+            we.pack_forget()
 
 
     def clear_page(self):
@@ -85,14 +102,10 @@ class WordPage(Frame):
 
         self.current_page = 1
 
-
-
-
-
             
     def add_word(self, values):
         word =          values[0]
-        translation =   values[1]
+        translation =   transliterate(self.current_language, values[1])
         book_id =       self.current_id
 
         self.db.insert_new_values('words', [word, translation, book_id])
@@ -131,7 +144,7 @@ class WordPage(Frame):
         w = self.current_inspected_word
 
         word = self.wef.word.get()
-        translation = self.wef.translation.get()
+        translation = transliterate(self.current_language, self.wef.translation.get())
 
         values = [w.id, word, translation, w.book_id]
         w.insert_labels(values)
