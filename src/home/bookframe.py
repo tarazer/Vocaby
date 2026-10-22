@@ -4,13 +4,15 @@ class BookFrame(Frame):
     """Frame that holds info on Book in UI"""
 
     def __init__(self, parent, title, language, description, id):
-        super().__init__(parent)
+        super().__init__(parent, bg='white', width=200, height=300)
         self.parent = parent
         self.pack_propagate(False)
 
+        self.title = title
+        self.language = language
+        self.description = description
         self.id = id
 
-        self.config(bg='white', width=200, height=300)
         colorcode = {'None': 'red','Spanish': 'orange','Russian': 'blue'}
 
         # Child Wigets of book_frame
@@ -58,7 +60,4 @@ class BookFrame(Frame):
             relx=1,
             rely=1,
             x=-9,
-            y=-9
-        )
-
-
+            y=-9)

@@ -58,6 +58,8 @@ class UI_OpenBook:
                 
 
     def pageforth(self):
+        self.wp.cancel_wef()
+    
         page = self.wp.current_page + 1
         if page > self.wp.max_page:
             page = self.wp.current_page
@@ -66,6 +68,8 @@ class UI_OpenBook:
 
 
     def pageback(self):
+        self.wp.cancel_wef()
+        
         page = self.wp.current_page - 1
         if page <= 0:
             page = 1

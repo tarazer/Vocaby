@@ -47,9 +47,9 @@ class BookForm(Frame):
 
 
     def _make_description_entry(self):
-        self.Description = Text(self.ContentFrame,
+        self.description_entry = Text(self.ContentFrame,
             font=('Helevetica', 12),)
-        self.Description.place(relx=0.5, 
+        self.description_entry.place(relx=0.5, 
             rely=0.5, 
             anchor=CENTER, 
             relwidth=1, 
@@ -58,12 +58,12 @@ class BookForm(Frame):
 
 
     def _make_dropdown(self):
-        dropdown_options = {'None': 'no'}
+        dropdown_options = {}
         for lang in Languages.keys():
             dropdown_options[lang.title()] = lang
         
         self.language_var = StringVar()
-        self.language_var.set("None") # default
+        self.language_var.set('Spanish') # default
         dropdown = OptionMenu(self.ContentFrame, 
             self.language_var, 
             *dropdown_options.keys(),)
@@ -100,7 +100,7 @@ class BookForm(Frame):
     def get_values(self):
         name = self.name.get()
         language = self.language_var.get()
-        description = self.Description.get('1.0', 'end-1c')
+        description = self.description_entry.get('1.0', 'end-1c')
 
         if name == '':
             return None
@@ -112,6 +112,7 @@ class BookForm(Frame):
 
     def clear_form(self):
         self.pm.hide_page('bookform')
+        self.focus_set()
         self.name.delete(0, END)
-        self.Description.delete('1.0', END)
-        self.language_var.set('None')
+        self.description_entry.delete('1.0', END)
+        self.language_var.set('Spanish')

@@ -2,7 +2,7 @@ import json
 from languages import Languages
 
 
-def transliterate(lang, string):
+def transliterate(lang, string):        
         dic = Languages[lang]
 
         keys = sorted(dic.keys(), key=len, reverse=True)

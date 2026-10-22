@@ -1,12 +1,12 @@
 from tkinter import *
 
-from homepage.taskbar import Taskbar
-from homepage.bookform import BookForm
-from homepage.bookdisplay import BookDisplay
+from home.taskbar import Taskbar
+from home.bookform import BookForm
+from home.bookdisplay import BookDisplay
 
-from openbookpage.wordform import WordForm
-from openbookpage.wordpage import WordPage
-from openbookpage.openbook_ui import UI_OpenBook
+from page.wordform import WordForm
+from page.wordpage import WordPage
+from page.openbook_ui import UI_OpenBook
 
 import logic
 from platformdirs import user_data_path

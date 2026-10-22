@@ -48,7 +48,7 @@ class WordPage(Frame):
         self.ui.load(id, self.current_page)
 
         self.make_entries()
-        self.calc_page()
+        self.max_page = self.get_max_page()
         self._insert_words()
 
 
@@ -56,7 +56,6 @@ class WordPage(Frame):
         rows = self.winfo_height() // 40 - 2
         
         if rows > self.rows: # More rows then previously
-            # MAKE IT so IF WORD ENTRIES ALREADY EXIST THEy ARE ShoOWN INSTEASD OF NEW CREATED
             for _ in range(rows-self.rows):
                 wordentry = WordEntry(self)
                 wordentry.place_self()
@@ -72,12 +71,12 @@ class WordPage(Frame):
         self.rows = rows
 
 
-    def calc_page(self):
+    def get_max_page(self):
         pages = math.ceil(len(self.word_values) / self.rows)
         if pages <= 0:
-            pages = 1
-
-        self.max_page = pages
+            return 1
+        else: 
+            return pages
 
 
     def _insert_words(self):
@@ -163,9 +162,10 @@ class WordPage(Frame):
         self.current_inspect_word = None
 
 
-    def cancel_wef(self, event):
+    def cancel_wef(self, event=None):
         self.wef.clear_entries()
         self.wef.place_forget()
+        self.focus_set()
         
         self.wef.unbind_all('<Return>')
         self.wef.unbind_all('<Escape>')
