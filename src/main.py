@@ -26,6 +26,7 @@ def on_resize(event):
     
     window.after_id = window.after(50, UpdateLayout)
 
+
 def UpdateLayout():
     book_display.load_books()
     wordpage.load(db.get_newest_entry('books')[0])
@@ -78,6 +79,4 @@ pagemanager.show_page('home')
 
 window.mainloop()
 
-# Clean up after app closed
-db.delete_removed_books()
 db.conn.close()

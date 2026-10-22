@@ -45,10 +45,10 @@ class Database():
         
         self.conn.commit()
 
-        # For Book Display
-        self.removed_book_ids = []
+
+    def get_books(self):
         self.c.execute("SELECT rowid,* FROM books")
-        self.book_values = self.c.fetchall()
+        return self.c.fetchall()
 
 
     def insert_new_values(self, table, values):
@@ -61,12 +61,6 @@ class Database():
         query = f"UPDATE {table} SET word=(?), translation=(?)  WHERE rowid={id}"
         self.c.execute(query, (values))
         self.conn.commit()
-
-
-    def delete_removed_books(self):
-        for id in self.removed_book_ids:
-            self.c.execute("""DELETE FROM books WHERE rowid=(?)""", (id,))
-            self.conn.commit()
 
 
     def delete_id_from_table(self, table, id):

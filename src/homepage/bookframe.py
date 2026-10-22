@@ -3,10 +3,12 @@ from tkinter import *
 class BookFrame(Frame):
     """Frame that holds info on Book in UI"""
 
-    def __init__(self, parent, title, language, description):
+    def __init__(self, parent, title, language, description, id):
         super().__init__(parent)
         self.parent = parent
         self.pack_propagate(False)
+
+        self.id = id
 
         self.config(bg='white', width=200, height=300)
         colorcode = {'None': 'red','Spanish': 'orange','Russian': 'blue'}

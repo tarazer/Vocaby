@@ -9,20 +9,16 @@ class BookDisplay(Frame):
     in Homecontent on Homepage"""
 
     def __init__(self, parent, pagemanager, database, wordpage):
-        super().__init__(parent)
+        super().__init__(parent, bg='lime')
         self.pm = pagemanager
         self.db = database
         self.wp = wordpage
         
-        self.books = {} 
+        self.active_list = []
+        self.deleted_list = []
 
-        # For checking if column or amount elements
-        # matches previous reload so it doesnt get 
-        # reloaded each time screen is resized
-        self.prev_columns = None
-        self.prev_num = None
-
-        self.config(bg='lime',)
+        for values in self.db.get_books():
+            self.place_book(values)
 
 
     def addBook(self, values):
@@ -33,68 +29,54 @@ class BookDisplay(Frame):
 
         full_values = self.db.get_newest_entry('books')
         self.place_book(full_values)
-        self.db.book_values.append(full_values)
         self.load_books()
 
 
     def delete_book(self, book_frame):
         result = messagebox.askyesno(message="Are you sure you want to delete the book?", default='no', icon='warning', detail="This action cannot be undone.")
         if result == True:
-            id = self.books[book_frame]
-            self.db.removed_book_ids.append(id)
-            book_frame.destroy()
-
-            for book in self.db.book_values[:]:
-                if book[0] == id:
-                    self.db.book_values.remove(book)
+            id = book_frame.id 
+            
+            self.db.delete_id_from_table('books', id)
+            self.active_list.remove(book_frame)
+            self.deleted_list.append(book_frame)
+            
+            self.load_books()
 
 
     def openBook(self, event):
-        id = self.books[event.widget.master]
+        id = event.widget.master.id
         self.pm.show_page('list')
         self.wp.load(id)
 
 
-    def place_book(self, values, row=0, column=0):
-        """Place book using values for labels. 
-        Row/Column are provided or default 0 
-        if book is new, as then layout is reloaded asap"""
+    def place_book(self, values): 
+        """Create book using values without placing it"""
         id =            values[0]
         title =         values[1]
         language =      values[2]
         description =   values[3]
 
-        book_frame = BookFrame(self, title, language, description)
-
-        # Place Bookframe and assign itself as key to a id value
-        book_frame.grid(row=row, column=column,padx=(0, 20), pady=(0,20))   
-        self.books[book_frame] = id
+        book_frame = BookFrame(self, title, language, description, id)
+        self.active_list.append(book_frame)
 
 
     def load_books(self):
-        """Get info on how many rows/columns of books on screen
-        and place a box for each book in db"""
-        book_values = self.db.book_values
-
-        # Number of availible rows/coumns and creating row/column pointer
-        rows, columns = self.get_dimensions(len(book_values))
+        rows, columns = self.get_dimensions(len(self.active_list))
         row = column = 0
 
-        if columns != self.prev_columns:
-            for book in self.winfo_children():
-                book.destroy()
+        # Delete removed books
+        for widget in self.deleted_list[:]:
+            self.deleted_list.remove(widget)
+            widget.destroy()
+        
+        for book in self.active_list:
+            if column >= columns:
+                row += 1
+                column = 0
 
-        if columns != self.prev_columns or len(book_values) != self.prev_num:
-            for values in book_values:
-                
-                if column >= columns:
-                    row+=1
-                    column = 0
-                self.place_book(values, row, column)
-                column+=1
-
-        self.prev_columns = columns
-        self.prev_num = len(book_values)
+            book.grid(row=row, column=column,padx=(0, 20), pady=(0,20)) 
+            column += 1
 
 
     def get_dimensions(self, num_elements):
