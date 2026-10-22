@@ -1,6 +1,0 @@
-/
-	- main.exe
-	- books.db
-	- assets/
-		- languages.json
-		- config.json
