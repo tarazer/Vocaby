@@ -73,8 +73,7 @@ class UI_OpenBook:
         self.wp.load(self.wp.current_id)
 
 
-    def load(self, id):
+    def load(self, id, page):
         self.current_id = id
-        self.current_book = self.db.get_book_by_id(id)[1]
-        print(self.current_book)
+        self.current_book = self.db.get_book_by_id(id)[1] + str(page)
         self.book_label.config(text=self.current_book)

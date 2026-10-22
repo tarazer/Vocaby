@@ -28,6 +28,7 @@ def on_resize(event):
 
 def UpdateLayout():
     book_display.load_books()
+    wordpage.load(db.get_newest_entry('books')[0])
 
 
 # Initialize Tkinter, create Window and init managers

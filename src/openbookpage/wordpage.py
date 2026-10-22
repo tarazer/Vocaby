@@ -28,8 +28,8 @@ class WordPage(Frame):
         self.word_values = []
         self.word_entries = []
         
-        self.current_id = None
-        self.current_language = None
+        self.current_id = 0
+        self.current_language = ""
         self.current_inspected_word = None
         self.current_page = 1
 
@@ -38,11 +38,14 @@ class WordPage(Frame):
 
 
     def load(self, id):
+        if self.current_page > self.max_page:
+            self.current_page = self.max_page - 1
+
         self.current_id = id
         self.current_language = self.db.get_book_by_id(id)[2].lower()
         self.word_values = self.db.get_words_by_id(self.current_id)
 
-        self.ui.load(id)
+        self.ui.load(id, self.current_page)
 
         self.make_entries()
         self.calc_page()
