@@ -1,4 +1,4 @@
-{
+Languages = {
 	"russian": {
 
 		"Shch": "Щ",

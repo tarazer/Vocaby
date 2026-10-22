@@ -9,6 +9,13 @@ from openbookpage.wordpage import WordPage
 from openbookpage.openbook_ui import UI_OpenBook
 
 import logic
+from platformdirs import user_data_path
+
+
+
+DATA_DIR = user_data_path("VocabApp")
+DATA_DIR.mkdir(parents=True, exist_ok=True)
+DB_PATH = DATA_DIR / "vocaby.db"
 
 
 def on_resize(event):
@@ -27,7 +34,7 @@ def UpdateLayout():
 window = Tk()
 window.geometry('800x400')
 pagemanager = logic.PageManager()
-db = logic.Database()
+db = logic.Database(DB_PATH)
 
 
 # Creating Main Pages

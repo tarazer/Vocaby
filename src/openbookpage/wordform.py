@@ -1,5 +1,4 @@
 from tkinter import *
-from translator import transliterate
 
 class WordForm(Frame):
     """Form for adding new words"""

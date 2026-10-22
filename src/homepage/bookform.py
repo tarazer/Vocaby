@@ -1,6 +1,8 @@
 from tkinter import *
 import logic
 
+from languages import Languages
+
 class BookForm(Frame):
     """Form for creating new books. Pops up when 
     The add book button is clicked"""
@@ -56,7 +58,10 @@ class BookForm(Frame):
 
 
     def _make_dropdown(self):
-        dropdown_options = {'None': 'no', 'Spanish':'spanish', 'Russian': 'russian'}
+        dropdown_options = {'None': 'no'}
+        for lang in Languages.keys():
+            dropdown_options[lang.title()] = lang
+        
         self.language_var = StringVar()
         self.language_var.set("None") # default
         dropdown = OptionMenu(self.ContentFrame, 

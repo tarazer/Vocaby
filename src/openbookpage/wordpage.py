@@ -2,7 +2,9 @@ from tkinter import *
 from .wordentry import WordEntry
 from .word_editor import WordEditorForm
 from .openbook_ui import UI_OpenBook
+
 from translator import transliterate
+
 import math
 
 
@@ -11,7 +13,7 @@ class WordPage(Frame):
     translations for books of the Home Page. 
     Is managed by openbook ui"""
 
-    def __init__(self, parent, pagemanager, database):
+    def __init__(self, parent, pagemanager, database,):
         super().__init__(parent, bg='grey')
         self.parent = parent
         self.pm = pagemanager

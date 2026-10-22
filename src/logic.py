@@ -21,8 +21,8 @@ class PageManager:
 
 class Database():
     """sqlite database"""
-    def __init__(self):
-        self.conn = sqlite3.connect("books.db")
+    def __init__(self, path):
+        self.conn = sqlite3.connect(path)
         self.c = self.conn.cursor()
 
         #Create Table for books and words
